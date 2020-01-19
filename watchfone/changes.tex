@@ -1,0 +1,118 @@
+% !TeX root = ../main.tex
+Below are our responses to the associate editor and the individual reviewers. Our changes to the paper addressing these comments are highlighted in blue.
+
+\subsection{Response to Associate Editor's Suggestions} 
+\begin{enumerate}
+    \item {\bf Clarification of technical contributions}. 
+    The main technical contributions of this work are: 
+    \begin{enumerate}
+        \item {\em Extensive evaluation of vehicle sensor estimation algorithms under diverse realistic situations}. We show the robustness of vehicle sensor estimation algorithms on 6 different vehicles, 912 miles of driving, and under 4 different common uses of the phone by 7 different passengers. 
+        
+        \item {\em Thorough characterization of CAN-bus sensor falsification attacks}. We survey the literature on vehicular cybersecurity to create a taxonomy of different attacks on vehicular CAN bus. This taxonomy of attacks will guide future research into defenses against such attacks.
+        
+        \item {\em Development and evaluation of \watchfone\, a novel system to detect CAN-bus injection attacks}. We use phone-based vehicle sensor estimation to detect CAN-bus injection attacks. To the best of our knowledge, this is the first to apply phone-based vehicle estimation algorithms for the detection of CAN-bus sensor falsification attacks. We also demonstrate its computational feasibility with an efficient Android implementation and provide source code facilitating future follow-up research in this area. 
+    \end{enumerate}
+    
+    
+    \item {\bf Clarification of system details}.
+    The Bluetooth communication latency from the OBD device to the smartphone is negligible for our intended application (due to short distance and low traffic). Our goal is to detect attacks and warn the user, not to take any real-time response. A \watchfone{} can plug  their phone into the car power source to avoid battery drain. Finally, we have to calibrate the \watchfone{} estimation algorithms for each vehicle one time. This can be done by the OEM. We elaborate more on each response under the response for Reviewer 4.
+    
+    
+    \item {\bf Evaluation}. 
+    We conducted additional evaluation to address the comments raised by Reviewers 3 and 4. We give more details under their specific responses below. We evaluated by percentage injection and included the results below, but this isn't a useful analysis to include in the paper compared to what we already included. From our literature survey, we found that attackers might inject a specific absolute value or an absolute value offset from current value, so it is more meaningful to include these analyses. Upon closer inspection we realized that our steering wheel estimate is actually independent of the magnetometer, and hence it is independent of magnetic interference. Finally, we evaluated \watchfone{} with GPS noise injection. We found that higher GPS noise affects the speed estimate more, but this is mitigated by relying more on the aligned accelerometer readings.
+\end{enumerate}
+
+\subsection{Response to Reviewer 2}
+\begin{itemize}
+    \item {\bf Minor Revisions}. Fixed the section heading. We uploaded the source code of the main estimation algorithms to \url{https://github.com/carsec-research/carsec}. We plan to release the data after properly sanitizing any sensitive GPS information.
+\end{itemize}
+
+\subsection{Response to Reviewer 3}
+\begin{enumerate}
+    \item {\bf Lack of technical challenges}. 
+    Our main contribution is in collecting vehicle sensor estimation algorithms and thoroughly evaluating them for the new case of CAN-bus injection detection. We are the first to consider using phone-based sensor value estimation to detect CAN-bus injection. Therefore, our technical challenge lies in the robust testing of phone-sensor estimation algorithms in realistic conditions, and then the generation of a realistic CAN-bus injection evaluation.
+    
+    To this end, we surveyed the latest work in CAN-bus injection to build a thorough model of CAN-bus injection which resembles real attacks shown in other work. We also implemented all these into an efficient Android app and evaluate the robustness of detecting CAN-bus injection in diverse conditions such as while the passenger uses the phone. 
+    
+    \item {\bf Evaluation} 
+    
+    \begin{enumerate}
+        \item {\bf Evaluation with percentage injection}. 
+        From our literature survey of automotive attacks, we found that attackers would be more interested in absolute value injections. Most of the attacks we saw (and referenced in our paper) involve injecting a specific value into the CAN bus or offsetting the current value by a constant number.
+
+        While offsetting by a percentage makes sense in some cases, in other cases where the value is very low (e.g., steering wheel is close to 0), even a large percentage injection results in a very low actual injection. 
+
+        We studied this in more depth by evaluating the true positive rate for varying injection by percentage, as shown in Fig.~\ref{watchfone revision percentage}
+         
+            \begin{figure}
+                \centering
+                \includegraphics[width=\linewidth]{watchfone/revision/percentage-results-fixed-nan.png}
+                \caption{True positive rate detection accuracy for varying percentage injection. 
+                For each sensor, we injected a percentage of the current value and ran \watchfone\ 
+                to detect to injection. For many sensors, even a small percentage injection is 
+                quickly detected but in other cases, a percentage injection of a very small value 
+                (e.g., steering wheel is close to 0) is still a very small value, therefore it 
+                isn't readily detectable. Such a small injection is of lower consequence to the 
+                attack and is therefore not an interesting case to consider.}
+                \label{watchfone revision percentage}
+            \end{figure}
+            
+        \item {\bf Figure 5}. The description is given at the bottom of Figure 5. That large caption at the end is for the entire page of figures, since they are all related to a deeper dive into the errors. 
+        
+        \item {\bf Figure 6}. The four curves correspond to the four FPR values. The different colors correspond to the TPR or FPR curves. We clarified this in the figure caption.
+    \end{enumerate}
+        
+    \item {\bf Minor Revisions}. Our tests were run a Pixel 2 with an Octa-core ARM-based Kyro CPU. We now clearly stated this in the paper. We clarified which of the key findings are unique to our work and which are corroborating existing related work.
+    
+\end{enumerate}
+
+
+
+
+\subsection{Response to Reviewer 4}
+\begin{enumerate}
+    \item {\bf Using phones instead of vehicular sensors}. 
+    We agree that phones may have higher source of noise than dedicated embedded sensors or adding integrity checks directly to the vehicle. However, adding additional sensors to vehicles incurs additional cost whereas leveraging smartphones provides additional redundancy at no additional cost. Using smartphones for the purpose of estimation and injection detection opens up a new direction of research and development where we can leverage the full power of smartphones.
+    
+    
+    \item {\bf Robustness against phone sensor noise}. 
+    We investigated the effect of GPS noise and magnetic interference to our estimation algorithms. Upon closer analysis, we discovered that our steering wheel estimation algorithm, in fact, doesn't rely on magnetometer at all, which makes it unaffected by electro-magnetic interference. The steering wheel estimation only needs the aligned gyroscope around the gravity vector, as shown in the estimation equation: $\textrm{steering} = k * \arcsin(l*yaw_{rate})/v)$ where $yaw_{rate}$ is the third component of the aligned gyroscope $\vec{g'}_3$. Once we do the matrix multiplication with the rotation vector, we discovered that the third term ($\vec{g'}_3$) only relies on the gravity-facing vector $G$, as shown below.
+    
+    \begin{align}
+        \vec{g'} &= \boldsymbol{R} \vec{g} \\
+        &= \begin{bmatrix}
+            g_1\vec{C_1} + g_2\vec{C_2} + g_3\vec{C_3} \\
+            g_1\vec{V_x} + g_2\vec{V_y} + g_3\vec{V_z} \\
+            g_1\vec{G_x} + g_2\vec{G_y} + g_3\vec{G_z} 
+        \end{bmatrix}
+    \end{align}
+    
+    Next, we evaluated the effect of GPS noise on our vehicle speed estimation. We added randomly distributed GPS noise to every sample in our dataset. After injecting noise, we re-calculated the optimal $\alpha$ used in the complementary filter to combine the vehicle-aligned accelerometer readings and GPS-speed. We found that as we increased the GPS noise, the average estimation error also increases. Furthermore, we found that as we increase the noise, $\alpha$ also increases closer to 1. This means that as we increase the GPS noise, the complementary filter relies more and more on the accelerometer readings to compensate.
+    
+    
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.4\linewidth]{watchfone/revision/alpha_search.png}
+        \caption{We injected high-frequency noise to the GPS values at every 100 ms interval.
+        At each point, the noise was sampled from 
+        a normal distribution scaled appropriately.
+        This is likely a more extreme case of GPS noise than encountered in real life, but 
+        shows how our system responds to GPS noise. As we increase the noise by 1 meter, the 
+        trend is an increase in vehicle speed estimation error by 1 kmph. Furthermore, 
+        the complementary filter relies more and more on the accelerometer readings, as $\alpha$
+        approaches  1.0 with more GPS noise. 
+        }
+        \label{watchfone rebuttal gps}
+    \end{figure}
+    
+    
+    \item {\bf Latency for Response}. 
+    \watchfone\ is designed to alarm the user of suspicious activity. It is not intended to take any immediate real-time response based on this information. Any wireless latency incurred from the Bluetooth dongle sharing vehicle-reported information to the smartphone is negligible (due to short distance and low traffic) for our operation and intended purpose.
+    
+    \item {\bf Power drain}. 
+    We expect a user running \watchfone\ to plug in their phone to the car charging port during their drive. Therefore,  its battery drain is not as important/serious an issue 
+    as in general use-cases. 
+    
+    \item {\bf Scalability and calibration}. 
+    \watchfone\ needs to be calibrated one time for each vehicle. This can be done by the OEM before the car is released, and hence it is not a major concern for users of \watchfone.
+\end{enumerate}

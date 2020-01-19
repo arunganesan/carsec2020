@@ -1,0 +1,61 @@
+
+\begin{figure*}
+    \centering
+    \begin{subfigure}[b]{0.23\textwidth}
+        \includegraphics[width=\textwidth]{watchfone/figures/scenarios/i94}
+        \caption{Portion of a highway used for evaluating gradual fuel injection attack.}
+    \end{subfigure}
+    %
+    \begin{subfigure}[b]{0.23\textwidth}
+ \includegraphics[width=\textwidth]{watchfone/figures/scenarios/us23}
+        \caption{Portion of a highway used for evaluating sudden injection attack.}
+    \end{subfigure}
+    %
+    \begin{subfigure}[b]{0.23\textwidth}
+  \includegraphics[width=\textwidth]{watchfone/figures/scenarios/plymouth}
+        \caption{A winding surface street segment used to measure delta speed injection attack.}
+    \end{subfigure}
+    %
+    \begin{subfigure}[b]{0.23\textwidth}
+  \includegraphics[width=\textwidth]{watchfone/figures/scenarios/lohr}
+        \caption{A winding surface street segment used to measure delta speed injection attack.}
+    \end{subfigure}
+    \caption{We isolated 4 subsets of our data collection to simulate specific attack scenarios. 
+    See \ref{watchfone/figures/sec:scenarios} for more details. These locations were chosen because they are appealing from the attacker's perspective and because there are multiple trips over the same road segment in our collected data.}
+    \label{fig:different-scenarios}
+\end{figure*}
+
+We simulated three location-specific attacks, as previously discussed in Sec.~\ref{sec:attack-scenarios}. The three attack scenarios are examples of each of the three attacks (sudden, gradual, and delta) studied in the previous section. For all three attacks, we took the perspective of an attacker and identified locations and scenarios that would be appealing. 
+
+\subsubsection{Attack Scenarios}
+In the first attack, the attacker falsifies data to trigger the intelligent parking assistance ECU as demonstrated by Miller and Valasek \cite{miller_adventures_2013}. In their attack, they set the gear to reverse and falsify a speed value of 4 mph. Additionally, in an unrelated attack by the same authors \cite{miller_advanced_2016}, they demonstrate how to put an ECU in diagnostic mode by falsifying very low RPM values. We simulated an injection where the attacker falsifies the first gear position, 10 kmph speed value and 800 RPM. We evaluated this attack on the four portions of the road shown in Fig.~\ref{fig:different-scenarios}; these road segments would be appealing to an attacker (winding roads or middle of the highway). Since the purpose of this attack is to trick the ECU, the attacker doesn't have to be stealthy. He would inject the data suddenly to quickly cause the desired response.
+
+In the second attack, we simulate a {\it delta} attack where the attacker spoofs a different speedometer value. The attacker changes the displayed speedometer value to 15 kpmh less than the actual speed. This way, the driver may speed up to maintain the speed limit on the current road. The attacker targets a winding road to for this attack to attempt to trick the driver into going faster than considered safe and meet with an accident.
+
+In the third attack, we simulate a {\it gradual} attack where the attacker gradually changes the fuel level to less than 2 gallons remaining in the tank, triggering the low gas indicator. The purpose of this attack is to lower the fuel gauge reading when the driver is near a particular exit on the highway. That way, the attacker would convince the driver into taking the exit and driving to the nearest the gas station. The attacker can then wait at the gas station to physically harm the driver. 
+
+% \begin{figure}
+%   \includegraphics[width=0.45\textwidth]{scenarios/sudden-I94}
+%   \caption{The detection time for each sensor in the sudden attack.}
+%   \label{fig:scenario-one-results}
+% \end{figure}
+
+\subsubsection{Attack-Detection Accuracy}
+The sudden attack is an extreme change in the sensor values. So, \name{} was able to immediately detect the attack as different from the estimated values. Both speed and fuel levels were detected in 100 milliseconds (the smallest frequency of data in our dataset). However, \name{} needs 1.1 seconds to detect the RPM attack. This occurs because we have to look at 1.1 seconds of RPM values before we can confidently say whether or not an attack is ongoing. If we conclude this with less data, we observed high false positive rates. This analysis in explored more in depth in Sec.~\ref{watchfone/figures/sec:parametersearch}.
+
+\begin{figure}
+  \includegraphics[width=0.45\textwidth]{watchfone/figures/fig-15.png}
+  \caption{The relationship between time and magnitude of the delta speed injection attack. Each line, representing each trip, is colored red when the attack is not detected and green when it is detected.}
+  \label{fig:scenario-two-results}
+\end{figure}
+
+Fig.~\ref{fig:scenario-two-results} shows the detection time of the delta attack. Each line in the figure represents a different trip over the road segment. The $Y$ axis is the magnitude of the delta injection and the $X$ axis is the time into the attack. Since the car was traveling at different speeds in this street, the lines have different slope. The attack ranged over 80+ seconds. The attacker slowly increased the speed over that time period. So, \name{} detected the attack after $\approx$ 18 seconds into the attack. However, the real criteria for detection is the magnitude of the attack. When the attack exceeded $\approx$ 2kmph injection magnitude, \name{} was able to flag the attack. We also observed some false negatives as can be seen by spots of red colored points later into the attack. This happens because of transient estimation errors. Due to an error in estimation, the falsified value might seem like the accurate speed of the vehicle. When this happens, \name{} marks that region as safe, hence the false negative.
+
+
+\begin{figure}
+  \includegraphics[width=0.45\textwidth]{watchfone/figures/fig-16.png}
+  \caption{The relationship between time and magnitude of the gradual fuel level injection attack. Each line, representing each trip, is colored red when the attack is not detected and green when it is detected.}
+  \label{fig:scenario-three-results}
+\end{figure}
+
+Fig.~\ref{fig:scenario-three-results} shows the detection time and magnitude of the gradual fuel injection attack. Since \name{} can accurately model and detect deviation in fuel level, we detected this attack in less than 1 s from the onset. \name{} detects the attack before the attacker can inject a false fuel level deviating 0.03 gallon in most cases. 

@@ -1,0 +1,34 @@
+% !TeX root = ./main.tex
+
+Discussed below are a couple of remaining issues worth 
+further investigation beyond our current approach.
+
+\begin{itemize}
+   
+    \item \textbf{Compromised Phone Sensors.} As described in our adversary 
+    model (Sec.~\ref{background/advmodel}), we assume that the phone isn't 
+    compromised. Mobile security is an active research area on its own and is 
+    orthogonal to our work. We refer the reader to recent surveys on mobile 
+    security \cite{faruki_android_2015}.
+    
+    \item \textbf{Additional Redundancy.} We demonstrated that \watchfone{} can run 
+    on passengers' phones while they engage in common activities on their 
+    phones. Similarly, we can extend this work to other devices which have the 
+    required three sensors. \watchfone{} only needs IMU, magnetometer, and GPS 
+    sensors to estimate vehicular sensors. Many existing IoT devices could be 
+    used in this way including smartwatches, fitness trackers, or some mounted 
+    after-market devices such as Amazon Echo Auto,
+    \footnote{\url{https://www.amazon.com/Introducing-Echo-Auto-first-your/dp/B0753K4CWG}} 
+    as long as they expose access to these three sensors. We leave the evaluation 
+    of this extension as future work.
+     
+    \item \textbf{Response After Detection.} \watchfone{} serves as a two-factor 
+    source of knowledge to detect sensor falsification attacks. If an attack is 
+    detected, \watchfone{} merely notifies the driver of the suspicious activity and
+    they can choose to take the car to a mechanic for further diagnostics. We 
+    do not consider automated response based on this information. Automatically 
+    responding is risky since the attacker may target the smartphone in order
+    to trigger this response mechanism and immobilize the car. Therefore, we
+    restrict \watchfone{} to \textbf{\textit{detection}} and leave
+    \textbf{\textit{response}} up to the driver.
+\end{itemize}

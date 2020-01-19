@@ -1,0 +1,5 @@
+We evaluated \watchfone{} by driving around and collecting ground truth data from the CAN bus and smartphone sensors. Our evaluation required in-vehicle data that is beyond the scope of the OBD-II diagnostic standard, so we used OpenXC \cite{ford_openxc_2018} 
+to collect data from test cars. We collected data from \numtrips{} trips for a total of \numhours{} hours and \nummiles{} miles of driving. The trips covered highways and surface streets. We collected data from 7 different Ford vehicles and 3 drivers, summarized in Table~\ref{tab:eval-dataset}. The drivers were asked to place the phone in a natural stationary location such as the windshield, cup holder or their pocket. More diverse phone placements while the phone is used by the \textit{passenger} is shown in Sec.~\ref{eval/passenger-phone}.
+
+In the following evaluation, we estimate the in-vehicle sensors (speed, steering wheel angle, gear, engine RPM, odometer, and fuel level) using smartphone sensors (GPS, IMU, magnetometer). 
+See Sec.~\ref{system/estimation} for details of the estimation algorithms.

@@ -1,0 +1,116 @@
+\newcommand{\numtrips}{112}
+\newcommand{\numhours}{28.56}
+\newcommand{\nummiles}{712.8}
+
+% Updated latest results on 4/3/2019
+\newcommand{\estSpeedMedian}{0.69}
+\newcommand{\estSpeedHigh}{4.74}
+\newcommand{\estSteeringMedian}{2.02}
+\newcommand{\estSteeringHigh}{38.2}
+\newcommand{\estFuelMedian}{0.09}
+\newcommand{\estFuelHigh}{0.51}
+\newcommand{\estOdometerMedian}{0.15}
+\newcommand{\estOdometerHigh}{2.14}
+\newcommand{\estGearMedian}{0}
+\newcommand{\estGearHigh}{1}
+\newcommand{\estRpmMedian}{115.6}
+\newcommand{\estRpmHigh}{788.5}
+
+% Updated 4/3/2019
+\newcommand{\estGearSpeedCorrelation}{-0.1}
+\newcommand{\estSteeringSpeedCorrelation}{-0.22}
+\newcommand{\estSteeringGearCorrelation}{-0.31}
+
+% Updated 4/3/2019
+\newcommand{\estPlacementPocketGear}{1.67}
+\newcommand{\estPlacementPocketSpeed}{2.75}
+\newcommand{\estPlacementCupholderSpeed}{1.49}
+\newcommand{\estPlacementPocketSteering}{1.62}
+
+% TPR/FPR for each sensor and attack type
+% Non-zero injections ONLY. Updated 4/3/2019
+\newcommand{\gradualXspeedXTPRforFPRHalfPercent}{90.25}
+\newcommand{\gradualXspeedXFPRforFPRHalfPercent}{0.2}
+\newcommand{\gradualXspeedXTPRforFPRTenPercent}{94.98}
+\newcommand{\gradualXspeedXFPRforFPRTenPercent}{4.56}
+\newcommand{\gradualXsteeringXTPRforFPRHalfPercent}{58.33}
+\newcommand{\gradualXsteeringXFPRforFPRHalfPercent}{0}
+\newcommand{\gradualXsteeringXTPRforFPRFivePercent}{78.22}
+\newcommand{\gradualXsteeringXFPRforFPRFivePercent}{4.61}
+\newcommand{\gradualXgearXTPRforFPRFivePercent}{88.3}
+\newcommand{\gradualXgearXFPRforFPRFivePercent}{4.79}
+\newcommand{\gradualXgearXTPRforFPROnePercent}{78.1}
+\newcommand{\gradualXgearXFPRforFPROnePercent}{0.22}
+\newcommand{\gradualXrpmXTPRforFPRTenPercent}{43.22}
+\newcommand{\gradualXrpmXFPRforFPRTenPercent}{0.54}
+\newcommand{\gradualXfuelXTPRforFPROnePercent}{64.57}
+\newcommand{\gradualXfuelXFPRforFPROnePercent}{0.77}
+
+
+% Non zero injection ONLY - Updated 4/3/2019
+\newcommand{\deltaXfuelXTPRforFPROnePercent}{93.86}
+\newcommand{\deltaXfuelXFPRforFPROnePercent}{0.77}
+\newcommand{\deltaXspeedXTPRforFPRHalfPercent}{99.67}
+\newcommand{\deltaXspeedXFPRforFPRHalfPercent}{0.2}
+\newcommand{\deltaXsteeringXTPRforFPRHalfPercent}{91.98}
+\newcommand{\deltaXsteeringXFPRforFPRHalfPercent}{0}
+
+
+
+% Non zero injection ONLY - Updated 4/3/2019
+\newcommand{\suddenXfuelXTPRforFPROnePercent}{88.8}
+\newcommand{\suddenXfuelXFPRforFPROnePercent}{0.77}
+\newcommand{\suddenXspeedXTPRforFPRHalfPercent}{97.33}
+\newcommand{\suddenXspeedXFPRforFPRHalfPercent}{0.2}
+\newcommand{\suddenXsteeringXTPRforFPRHalfPercent}{94.12}
+\newcommand{\suddenXsteeringXFPRforFPRHalfPercent}{0}
+\newcommand{\suddenXgearXTPRforFPRFivePercent}{94.8}
+\newcommand{\suddenXgearXFPRforFPRFivePercent}{4.79}
+\newcommand{\suddenXgearXTPRforFPRHalfPercent}{90.08}
+\newcommand{\suddenXgearXFPRforFPRHalfPercent}{0.22}
+\newcommand{\suddenXrpmXTPRforFPRFivePercent}{78.29}
+\newcommand{\suddenXrpmXFPRforFPRFivePercent}{0.54}
+
+
+% By magnitude results -- Updated 4/11/2019
+
+%% FOR FPR = 5%
+\newcommand{\magXgradualXspeedXzeroXTPR}{60.16}
+\newcommand{\magXgradualXspeedXoneXTPR}{85.04}
+\newcommand{\magXgradualXspeedXnineXTPR}{99.93}
+\newcommand{\magXgradualXfuelXzeroXTPR}{16.24}
+\newcommand{\magXgradualXfuelXoneXTPR}{74.01}
+\newcommand{\magXgradualXfuelXnineXTPR}{100}
+\newcommand{\magXgradualXsteeringXzeroXTPR}{46.74}
+\newcommand{\magXgradualXsteeringXnineXTPR}{99.64}
+\newcommand{\magXgradualXgearXzeroXTPR}{75.66}
+\newcommand{\magXgradualXgearXsixXTPR}{99.6}
+\newcommand{\magXgradualXrpmXzeroXTPR}{5.77}
+\newcommand{\magXgradualXrpmXoneXTPR}{50.32}
+\newcommand{\magXgradualXrpmXtwoXTPR}{63.85}
+\newcommand{\magXgradualXrpmXfiveXTPR}{87.23} % This is the one with 1K - 1.5K injection.
+\newcommand{\magXgradualXrpmXnineXTPR}{99.27}
+\newcommand{\magXdeltaXodometerXfourXTPR}{100}
+\newcommand{\magXdeltaXodometerXfourXFPR}{4.2}
+
+
+
+% FPR=0.5%
+% \newcommand{\magXgradualXspeedXzeroXTPR}{37.09}
+% \newcommand{\magXgradualXspeedXoneXTPR}{72.39}
+% \newcommand{\magXgradualXspeedXnineXTPR}{99.85}
+% \newcommand{\magXgradualXfuelXzeroXTPR}{2.72}
+% \newcommand{\magXgradualXfuelXoneXTPR}{54.84}
+% \newcommand{\magXgradualXfuelXnineXTPR}{100}
+% \newcommand{\magXgradualXsteeringXzeroXTPR}{26.95}
+% \newcommand{\magXgradualXsteeringXoneXTPR}{87.07}
+% \newcommand{\magXgradualXsteeringXnineXTPR}{99.27}
+% \newcommand{\magXgradualXgearXzeroXTPR}{57.32}
+% \newcommand{\magXgradualXgearXsixXTPR}{99.19}
+% \newcommand{\magXgradualXrpmXzeroXTPR}{0.44}
+% \newcommand{\magXgradualXrpmXoneXTPR}{28.47}
+% \newcommand{\magXgradualXrpmXtwoXTPR}{43.77}
+% \newcommand{\magXgradualXrpmXfourXTPR}{78.67} % This is the one with 1K - 1.5K injection.
+% \newcommand{\magXgradualXrpmXnineXTPR}{97.13}
+% \newcommand{\magXdeltaXodometerXfourXTPR}{100}
+% \newcommand{\magXdeltaXodometerXfourXFPR}{0.17}

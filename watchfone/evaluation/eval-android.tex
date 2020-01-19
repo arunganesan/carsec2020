@@ -1,0 +1,44 @@
+% High-level overview to remind the reader how it all fits together
+\begin{figure*}
+    \centering
+    \begin{subfigure}[b]{0.5\textwidth}
+        {\includegraphics[width=\linewidth]{watchfone/figures/implementation-dependencies.pdf}}
+        {\caption{The architecture of our \watchfone{} implementation. The gray modules contribute to the estimated outputs. The black modules are the six estimators.}
+        \label{fig:implementation-modular-dependencies}}
+        \vspace*{-0.2in}
+    \end{subfigure}
+    \hspace{0.1in}
+    \begin{subfigure}[b]{0.4\textwidth}
+        {\includegraphics[width=\linewidth]{watchfone/figures/average-cpu-comparison.pdf}}
+        {\caption{Average \% CPU utilized for each individual component of \watchfone{} and the combined operation of \watchfone{}.}
+        \label{fig:cpu-util}}
+        \vspace*{-0.2in}
+    \end{subfigure}
+    \caption{Implementation details and measurements}
+\end{figure*}
+
+
+We implemented \watchfone{} as an Android app for all devices running Android 7.0 or higher. \watchfone{} reads vehicular data via a Bluetooth-based dongle attached to the vehicle's OBD port. 
+It uses the internal phone-based sensors to estimate the same sensors from the OBD dongle, and reports any suspicious looking discrepancies to the user. \watchfone\ infrequently polls nearby Bluetooth devices to detect if it is within proximity of the vehicle. Once it detects that the user is near their vehicle, it establishes a connection, and starts security-assistance operations.
+
+{\color{highlightColor} The Bluetooth latency incurred by \watchfone\ communicating the information from the OBD dongle to the phone is negligible (due to short distance and low traffic) and all data are aligned to the same time using 
+timestamps. Furthermore, as we show below, the time to run each estimation algorithm is also within the order of milliseconds, making \watchfone\ a very time-efficient implementation.}
+
+% Some interesting details of implementation
+We implemented each of the six sensor estimators into \watchfone{} in a modular fashion. Each module has a set of inputs which it uses to calculate the estimated value. The inputs can be raw phone sensors or outputs from other module estimators. Fig.~\ref{fig:implementation-modular-dependencies} shows the relationship between the input and output of each module. Each module's outputs are routed to other modules which depend on them. This modular implementation pattern avoids replicated code and operations within the resource-constrained phone. We built each module on top of a vehicular data collection library developed in our lab. The library handles interfacing with Android sensors, with Bluetooth-based OBD dongle, routing data from one module to another, and many other basic requirements of \watchfone{}. Each sensor estimation logic took less than 100 lines of Java code to implement. The vehicle alignment and gear estimation modules took the most amount of development effort due to their increased complexity.
+
+We measured the CPU usage of each of the estimators within \watchfone{} and the combined operation of \watchfone{}. The results are shown in Fig.~\ref{fig:cpu-util}. We separated out the six estimation algorithms within \watchfone{} and evaluated their CPU usage in isolation, shown in the first six bars of the figure. These algorithms were tested using trace of the sensor data, in order to measure CPU usage isolated from data collection. We also measured the CPU usage of data collection as a separate trial shown in the bar titled ``Read Phone Sensors'', and the full \watchfone{} implementation with all estimators and data collection, shown in the bar titled ``Full \watchfone{}''. All our measurements were made on a Google Pixel 2{, which has an Octa-core ARM-based Kyro CPU}.
+
+
+For each test case, we ran that subset of \watchfone{} for 1 minute and sampled the percent CPU utilized using `\texttt{top}'. We divided this value by the number of cores --- 8 cores in our test device. We also measured the CPU utilized by two system-level hardware access services (grouped under ``Hardware services") and two system services responsible for other operation within Android (grouped under ``System services"). 
+
+
+As shown in Fig.~\ref{fig:cpu-util}, \watchfone{} only uses approximately 2\% of the total CPU availability for each of the sensor estimators. Furthermore, when we ran all sensors simultaneously (shown under ``All Estimators''), the CPU utilization is still near 2\%. The primary overhead of running \watchfone{} is not the sensor estimation algorithms; their implementation is very light-weight and make use of the output from each other to reduce total CPU consumption. The primary overhead comes from other Android-related requirements of launching an app.
+
+Next we measured the cost of reading from the smartphone sensors (i.e., GPS, IMU and magnetometer) without doing any sensor estimation. That is shown in the bar labeled ``Read Phone Sensors''. The \watchfone{} process only takes approximately 1\% of the CPU, but the system-wide services which are used to read from the sensors take approximately 6\%, putting the total at around 7\% CPU utilization. Finally, we ran the full \watchfone{} implementation with a user interface and it takes approximately 8\% of the total CPU utilization.
+
+{\color{highlightColor} We expect the driver to connectplug their phone in the car power source, as is commonly the case. A security-conscious driver may be willing to make this tradeoff to avoid any battery consumption by \watchfone}.
+
+Each of the six modules which estimate six sensors run in negligible time. We measured this by running \watchfone{} and measuring the time required to process and output each of the estimations. We averaged the runtime over approximately 100 runs of each estimator. Speed, steering wheel, fuel, and engine RPM modules all ran in less than 1 ms on average. Odometer estimation ran in 2 ms on average and gear estimator took 5.6 ms on average. The gear module is the most complex as it uses a neural network to predict the gear position, and hence it takes the longest amount of time. Since each estimation is very fast, the real bottleneck is the rate at which the phone provides us with the low-level sensor values. For example, the odometer estimation module depends on the GPS, which is often only available at 1Hz.
+
+%- Maybe include a video of the app -- we have to make sure the userwatchfone is anonymous so our anonymity is preserved. The reviewer anonymity is not at risk since it is Youtube and not our own server.

@@ -1,0 +1,199 @@
+We evaluated \watchfone's estimation accuracy in the absence of attacks. We compare the estimated and the ground truth values for all \numtrips{} trips. 
+Fig.~\ref{fig:estimation-accuracy} plots the CDF of the errors.
+
+\subsubsection{Speed} 
+\watchfone{} can very accurately estimate the speed using GPS sensors 
+--- 50th percentile has $<$ \estSpeedMedian{}kmph error, and 95th percentile 
+has $<$ \estSpeedHigh{}kmph error. The low-frequency speed 
+($<$ 1Hz) is accurately estimated using the GPS-inferred speed and the high-frequency speed ($>$ 1Hz) is estimated using 
+the aligned accelerometer readings.
+
+\subsubsection{Gear}
+\watchfone{} also accurately estimates the gear position. Over $\approx$80\% of the time, it can exactly estimate the current gear position, and at 95\% percentile, it is wrong by 
+1 gear position. 
+We noticed that the errors are related to where the 
+driver travels. \watchfone{} can more accurately estimate the gear 
+position when the trip is predominantly in the highway versus 
+surface local roads (see Figs.~\ref{fig:local gear error}~and~\ref{fig:highway gear error}). 
+We divided the data from the highway 
+and the local road by map-matching the GPS points to the 
+OpenStreetMap database. This effect occurs because the driver 
+tends to stay in the same gear in the highway whereas there is 
+much more fluctuation caused by start and stop behavior on the 
+surface streets. This is further corroborated by the fact that
+gear estimation error and vehicle speed have a negative pairwise correlation of \estGearSpeedCorrelation{}, meaning as the vehicle goes faster, there is less gear estimation error.
+
+
+\subsubsection{Odometer, Fuel-Level}
+\watchfone{} can also accurately estimate 
+odometer (50th\% $<$ \estOdometerMedian{}km, 95\% $<$ \estOdometerHigh{}km) and fuel level 
+(50th\% $<$ \estFuelMedian{}L, 95\% $<$ \estFuelHigh{}L). Due to the accumulative 
+nature of fuel estimation, we noticed an increasing error as 
+the trip continues for a longer period of time. The fuel-level 
+estimate and drifting error are shown in Fig.~\ref{fig:fuel-error}. The accumulating error only affects the estimates within a single trip. In between trips, \watchfone{} estimates the \textit{change} in odometer and fuel level, and is therefore able to detect injection attacks which happen during the trip.
+
+
+\subsubsection{Steering Wheel Angle} 
+\watchfone{} can estimate steering wheel angle with $<$ \estSteeringMedian{}$^{\circ}$
+error in 50\% of all trips, and $<$ \estSteeringHigh{}$^{\circ}$ in 95\% of all trips. 
+We found a strong negative correlation between steering wheel angle estimation and vehicle speed (coef=\estSteeringSpeedCorrelation{}) and gear position (coef=\estSteeringGearCorrelation{}).
+We found large errors in steering wheel angle when the car moves slowly. This occurs because 
+as the car drives faster, there is a stronger relationship between the induced yaw rate in
+the vehicle 
+body and the steering wheel angle. 
+
+\subsubsection{Engine RPM} 
+\watchfone{} has the most challenge in estimating the engine RPM.
+The 50\% error is \estRpmMedian{} RPM and 95\% error is \estRpmHigh{} RPM. We use the
+estimated vehicle speed and vehicle gear position to calculate the likely RPM value 
+(equation shown in Table~\ref{tab:estimation-summary-table}). Even if we use the ground 
+truth vehicle speed and gear position, there is a large variability in the calculated
+RPM, as shown in Fig.~\ref{fig:ideal-rpm-error}. 
+
+This large variation in the engine RPM estimation is caused by tire slip. The relationship between
+the engine RPM and tire speed is mediated by the tire slip ratio \cite{cho_cps_2015}. The tire 
+slip is affected by such factors as the road conditions, wear of the tire, and the friction coefficient 
+between the tire and the road. To uncover this relationship, we separated the regions with high 
+acceleration of the vehicle, where there is likely to be high tire slip as the vehicle moves 
+faster, from regions with low acceleration. This difference in the estimation error between the 
+two scenarios is shown in Fig.~\ref{fig:tire-slip-pdfs}. We found +524 more RPM error (a 1790\% 
+increase) for sudden acceleration versus normal acceleration conditions. Similarly, we found 372\% 
+increased error in up-hill versus flat roads and 178\% increased error in high-precipitation areas.
+(Not shown in figure)
+
+\begin{figure*}[!htb]
+  \centering
+   \begin{subfigure}[b]{0.15\textwidth}
+      \includegraphics[width=\textwidth]{watchfone/figures/passenger-experiments/passenger_speed-0.pdf}
+      \caption{50th - Speed}
+   \end{subfigure}
+   %
+   \begin{subfigure}[b]{0.15\textwidth}
+      \includegraphics[width=\textwidth]{watchfone/figures/passenger-experiments/passenger_steering-0.pdf}
+      \caption{50th - Steering}
+   \end{subfigure}
+   %
+   \begin{subfigure}[b]{0.15\textwidth}
+      \includegraphics[width=\textwidth]{watchfone/figures/passenger-experiments/passenger_rpm-0.pdf}
+      \caption{50th - RPM}
+   \end{subfigure}
+   %
+   \begin{subfigure}[b]{0.15\textwidth}
+   \RaggedRight
+      \includegraphics[width=\textwidth]{watchfone/figures/passenger-experiments/passenger_speed-1.pdf}
+      \caption{95th - Speed}
+   \end{subfigure}
+   %
+   \begin{subfigure}[b]{0.15\textwidth}
+      \includegraphics[width=\textwidth]{watchfone/figures/passenger-experiments/passenger_steering-1.pdf}
+      \caption{95th - Steering}
+   \end{subfigure}
+   %
+   \begin{subfigure}[b]{0.15\textwidth}
+      \includegraphics[width=\textwidth]{watchfone/figures/passenger-experiments/passenger_rpm-1.pdf}
+      \caption{95th - RPM}
+   \end{subfigure}
+
+   \caption{Estimation error using the passenger's phone. The black horizontal line shows 
+   the 50th and 95th percentile errors for each of these sensors when the phone is more 
+   carefully mounted, as done in our previous experiments.}
+   \label{fig:passenger-estimation-accuracy}
+\end{figure*}
+
+
+\subsubsection{GPS blockage noise}
+{\color{highlightColor}
+\watchfone\ relies on GPS to estimate the vehicle speed. 
+We evaluated the effect of GPS error/noise by adding artificial noise to the dataset before estimating the vehicle speed.
+The results are plotted in Fig.~\ref{watchfone rebuttal gps in paper}. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\linewidth]{watchfone/revision/alpha_search.png}
+    \caption{\color{highlightColor} Vehicle speed estimation error for increasing high-frequency GPS noise.
+    For higher GPS noise, \watchfone\ relies more and more on the accelerometer component 
+    of the complementary filter. }
+    \label{watchfone rebuttal gps in paper}
+\end{figure}
+
+We added normally-distributed noise to the GPS samples 
+(sampled up to once every 100ms). We injected random noise for each 100ms time sample of the GPS signal. Realistic 
+GPS noise is likely to be less jittery and noisy, but our analysis shows the effect
+of a more extreme noise distribution. We found that as we increase the high-frequency 
+GPS noise, the average error also increases. The trend is that for every additional meter 
+of high-frequency GPS noise, we see an additional error of 1 km/h speed estimation on 
+average. Furthermore, we found that with an increased GPS noise, \watchfone\ also relied 
+more on the vehicle-aligned accelerometer. This is shown as the $\alpha$ curve in our 
+analysis results. $\alpha$ refers to the trade-off between 
+GPS-speed and accelerometer-speed, used in the complementary 
+filter in \watchfone. To extend this work, we can use the GPS
+confidence returned by GPS chips to conditionally turn
+on or off \watchfone's estimation capabilities.}
+
+
+\subsubsection{Additional Redundancy from Passengers' Phones}
+\label{eval/passenger-phone}
+
+\watchfone\ can be easily extended to make use of additional sources of 
+redundancy from other devices. We demonstrate this possibility by running 
+\watchfone{} on passengers' smartphones while they engage in various common 
+activities on their phone. We recruited 7 different passengers to repeat a 6.7
+mile-long circuit four times. Each trip around the circuit, the passenger 
+engaged in one of the following four activities --- watching a movie, browsing 
+a website, typing out a message, or making a phone call. For each condition we 
+collected $\approx$2 hours and 50 miles of data. In total we collected 7.9 hours
+and 200 miles of data.
+
+
+The 50th and 95th percentile estimation errors are shown in 
+Fig.~\ref{fig:passenger-estimation-accuracy}. We skipped odometer and fuel 
+since those only depend on the GPS, which is unaffected by who is using the 
+phone. We also skipped gear estimation results since they are the same as the
+50th and 95th percentile estimation accuracy presented earlier in this section.
+
+Across all sensors, the estimation accuracy is only minimally affected by the
+passenger using the phone. There are two main factors which affect the 
+estimation accuracy while the passenger uses the phone. 
+
+The first factor is how much the user interacts with the phone. We found that 
+as the user types on the phone or makes a phone call, the steering wheel 
+estimation accuracy tends to be worse. Especially when the passenger types on 
+the phone, the 95th percentile steering wheel estimation error is worse compared 
+to other activities. The steering wheel estimation heavily makes use of the IMU
+sensors to both align to the world-frame and convert the gyroscope readings to 
+steering wheel estimates. Increased noise in the IMU readings results in worse 
+estimations. Speed is also affected by typing (95th percentile texting is worse
+than browsing) but this is overshadowed by a second factor.
+
+The second factor is the phone orientation. When the passenger watches a movie 
+(in landscape orientation) or places a phone call, the phone is no longer oriented
+in the direction of the car's travel. For both browsing and texting, the phone
+is in portrait orientation and faces the direction of the car's travel. Since 
+speed estimation uses the accelerometer in the direction of the car's travel, 
+this is more sensitive to the phone orientation. 
+
+The second factor doesn't affect steering wheel estimations as badly because 
+the phone only needs to the re-oriented to the world-plane to get the angular 
+movement. {\color{highlightColor}We simply do this using the gravity vector.} In contrast,
+the speed estimation requires that we get the oriented acceleration along the
+axis of the car's movement, which is a more constrained estimation of the 
+phone's orientation.
+
+\watchfone{} can similarly be extended using other IoT devices such as the 
+driver's smartwatch.
+
+\pagebreak
+\input{watchfone/estimation-investigation-figures}
+\pagebreak
+
+\subsubsection{Key Findings}
+Our key findings in estimating 6 vehicular sensors using 3 phone sensors can be summarized as follows. {\color{highlightColor}The first three key findings reflect and corroborate similar findings in related work. The fourth key finding is an extension based on our experiments with passenger phones}.
+\begin{itemize}
+    \item The phone can be used to accurately estimate the speed, steering wheel, gear position, consumed fuel level, and change in odometer.
+    
+    \item It is difficult to estimate engine RPM. This value cannot be directly estimated from the other sensors due to tire slip caused by external factors.
+    
+    \item Error of steering wheel angle estimation and gear estimation are negatively correlated with vehicle speed --- the faster the car, the lower the estimation error.
+    
+    \item \watchfone{} can be extended to other sensing devices such as the passenger's phone. The estimation accuracy only minimally suffers while the passenger engages in common activities on their phone. 
+\end{itemize}

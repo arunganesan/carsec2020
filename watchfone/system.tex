@@ -1,0 +1,136 @@
+% !TeX root = ./main.tex
+
+\label{system/estimation}
+We estimated six in-vehicle sensors using smartphone sensors. We chose to focus on these 6 sensors for the following reasons. They are falsified in various attacks found in literature on offensive vehicle security. Furthermore, they are related to vehicle dynamics, thereby making it possible to replicate and cross-validate them using the external smartphone sensors. There are also increasing commercial interests in these sensors, making them available to consumers.
+
+These sensors and their estimation equations are summarized in Table~\ref{tab:estimation-summary-table}. For some of them, we used estimated sensors as input to estimate additional sensors. The dependency of sensor estimation is shown in Fig.~\ref{fig:implementation-modular-dependencies}. 
+\watchfone{} cross-validates these estimations with the sensor values reported via the CAN bus to confirm or raise a warning about the reported values. We give the details of 5 sensors below. The odometer can be accurately estimated by accumulating the Haversine distance between consecutive GPS points.\footnote{\url{https://en.wikipedia.org/wiki/Haversine_formula}}
+
+{\color{highlightColor}Some of these sensor estimations require {\em per-vehicle} calibration. For example, we 
+trained a different neural network for each vehicle in our dataset for Gear estimation, and 
+loaded vehicle-specific parameters for engine RPM or fuel MPG. These must be done one time for each 
+vehicle model and can be done by the OEM before release.}
+
+
+\begin{table}[!htb]
+      \begin{subtable}{.5\linewidth}
+        \small
+        \centering
+        \begin{tabular}{| c | c |}
+          \hline
+          \rowcolor{black!15}
+          \textbf{Sensor} & \textbf{Estimation Method} \\ \hline
+          IMU-align &  $\boldsymbol{R} = [(\vec{V} \times \vec{G})^T; \vec{V}^T; \vec{G}^T]$   \\  \hline
+          Speed & $v_t = \alpha (v_{t-1} + Acc_Y * dt) + (1 - \alpha) GPS_v$ \\ \hline
+          Gear & {Neural-network based on vehicle speed} \\ \hline
+          Steering \cite{liu_bigroad:_2017} & $k * arcsin(l*yaw_{rate}/v)$   \\ \hline
+          Eng. RPM \cite{skog_indirect_2014} & $v * (F_r * G_r) / T$  \\ \hline
+          Odometer & Haversine sum of consecutive GPS  \\ \hline
+          Fuel level & Distance * Average MPG    \\ \hline
+        \end{tabular}
+        \caption{Estimation of 6 different sensors used in \watchfone. 
+        When an attack is detected, \watchfone{} compares the approximations with 
+        the values on CAN. For details on each sensor, see their respective sections below.}
+        \label{tab:estimation-summary-table}
+      \end{subtable}%
+      %
+      \hspace{0.1in}
+      \begin{subtable}{.4\linewidth}
+        \centering
+        \begin{tabular}{|c|}  
+          \hline
+          \rowcolor{black!15}
+          \textbf{Speed Offset in Seconds} \\ \hline
+          \{-0.5, -0.4, -0.3, -0.2, -0.1, 0\} \\ \hline
+          \{-5, -0.5, -0.4, -0.3, -0.2, -0.1, 0\}\\ \hline
+          \{-1, 0\} \\ \hline
+          \{-3, -2, -1, 0\}\\ \hline
+          \{-4, -3, -2, -1, 0\} \\ \hline
+        \end{tabular}
+        \caption{Each feature vector represents the vehicle's speed sampled at 
+        different time offsets in seconds. For each vehicle, we searched 
+        through each of these to find the most optimal one.}
+        \label{tab:nn-feature-vectors}
+      \end{subtable}
+    \caption{Summary of estimation equations.}
+    \vspace{-0.35in}
+  \end{table}
+
+
+\subsection{Speed}
+We fuse the speed estimates from both the accelerometer and GPS sensors using a complementary filter. The integration of consecutive accelerometer readings is an estimate of the speed, but due to the noise in the IMU sensor readings, this results in very divergent and incorrect speed estimates. Alternatively, we use the GPS sensor for speed estimates in the order of 1Hz, but it misses more frequent changes which might be sensed 
+by the IMU sampling at 10Hz. 
+
+To use the accelerometer, we first align the phone's IMU accelerometer readings to the vehicle's direction of travel.
+{\color{highlightColor} Given consecutive GPS points, we find the angle of the GPS bearing offset from the magnetic north. We then rotate the magnetic north vector from the magnetometer by the same angle to get the vehicle pointing vector from the phone's frame of reference, called $\vec{V}$. We do this using a change of basis transformation from the plane perpendicular to the frame of reference which has basis vectors $\vec{M}, \vec{G}, \vec{G} \times \vec{M}$ where $\vec{M}$ is the magnetic north.}
+% Given the gravity vector $\vec{G} = [G_x, G_y, G_z]$, we sample 360 vectors in the plane perpendicular to the gravity vector pointing in different directions, defined as $[X = cos(\theta), Y = sin(\theta), Z = -1 / (G_z * (G_xX + G_yY)]$. The aligned speed in the direction that has the maximum correlation to the GPS-based speed is found and used as the vehicle pointing direction $\vec{V}$. 
+Using $\vec{G}$ and $\vec{V}$ we can calculate the rotation matrix $\boldsymbol{R}$, described in Eq.~(\ref{eqn:rotation_matrix}).
+
+
+\begin{equation}
+\begin{split}
+\vec{C} = \vec{V} \times \vec{G}~~~~~~~~~~~~ \\
+\boldsymbol{R} = \begin{bmatrix}
+    \vec{C_0} & \vec{C_1} & \vec{C_2} \\
+    \vec{V_x} & \vec{V_y} & \vec{V_z} \\
+    \vec{G_x} & \vec{G_y} & \vec{G_z} 
+\end{bmatrix}
+\end{split}
+\label{eqn:rotation_matrix}
+\end{equation}
+
+After calculating $\boldsymbol{R}$, we rotate all accelerometer 
+readings in the vehicle's frame of reference by $\vec{Acc_v} = \boldsymbol{R}\vec{Acc_p}^T$ where $\vec{Acc_v}$ and $\vec{Acc_p}$ are the accelerometer vectors in the vehicle and phone frame of reference, respectively.
+
+As in \cite{liu_bigroad:_2017}, we also found that the GPS-estimated speed is slightly delayed from the actual vehicle speed. We aligned the GPS-speed by shifting
+it by $\approx$0.5 seconds, a value we found experimentally in our data.
+We fuse the $Y$ axis of the aligned $Acc_v$, and the delay-adjusted $GPS_{speed}$ using a complementary filter 
+$v_t = \alpha(v_{t-1} + Acc_v[Y] dt) + (1 - \alpha)GPS_{speed}$. We set $dt$ to 100 ms since our accelerometer sample rate is 10Hz. We search through a training set and set $\alpha$ to 0.33. 
+
+\subsection{Steering Wheel Angle}
+{\color{highlightColor}We estimate the steering wheel angle (SWA) using the yaw-rate of the gyroscope on the phone. 
+To accurately estimate the SWA, we first align the phone's coordinate system with the world coordinate 
+system, and then convert the angular rotation in the yaw axis to SWA. We use a similar rotation matrix
+as described in $\boldsymbol{R}$ above. Since we are only concerned about the yaw-rate, this only uses 
+the third row of the rotation vector --- which is the vector pointing in the direction of gravity. 
+Only using the gravity vector for world-frame alignment is more robust than using the vehicle-facing
+vector and is sufficient for SWA calculations.}
+
+With this new rotation matrix $\boldsymbol{R}'$, we calculate the aligned gyroscopic 
+movement in the world frame of reference by $\vec{g_w} = \boldsymbol{R}'\vec{g_p}^T$ 
+where $\vec{g_w}$ and $\vec{g_p}$ are the gyroscope vectors in the world and phone 
+frame of reference, respectively.
+
+Once we aligned to the world frame of reference, we use a simplified Ackerman mechanism
+model to estimate the steering wheel angle using the smartphone's IMU sensors 
+\cite{liu_bigroad:_2017}. The steering wheel angle is estimated using: 
+\begin{equation}
+\theta_{steering} = k * arcsin(l*yaw_{rate}/v),
+\end{equation}
+where $k$ is the steering ratio, $l$ is the vehicle length,\footnote{We found both of 
+these in vehicle specifications published online by the respective manufacturers.} $v$ 
+is the vehicle speed and $yaw_{rate}$ is the world-aligned yaw rate calculated using
+the above transformation.
+
+\subsection{Fuel Level}
+We estimate the vehicle's fuel level by using the manufacturer's published average MPG. Starting with a full tank of gas, \watchfone{} uses the manufacturer-published datasheet on the tank capacity of the vehicle. As the user drives his vehicle, \watchfone{} matches each location of the vehicle to a road segment\footnote{We matched 
+it to OpenStreetMap \cite{openstreetmap_openstreetmap_2018}.} 
+and labels that as either highway or city-level driving, 
+using publicly available information, e.g., \cite{ford_2017_2018}. 
+We take the average MPG for that type of road and multiply it 
+by the distance traveled to get the new fuel tank level.
+
+\subsection{Gear Position} 
+We focus on automatic transmission vehicles and exclude continuous variable transmission systems. The gear position in automatic transmission vehicles is controlled by the Transmission Control Unit (TCU). The TCU uses inputs from a variety of vehicle sensors to inform its algorithm to upshift or downshift the gear. These sensors include the vehicle speed, throttle position, and many others. Using a detailed algorithm, the TCU adjusts the gear position to reduce load on the engine, increase safety of the driver, and reduce the long-term wear and tear of internal components. 
+
+Since the smartphone lacks access to many of these sensor values, we trained neural networks based on a vector of the vehicle's recent speed to predict the current gear position. For each vehicle, we found the most accurate feature vector from those listed in Table~\ref{tab:nn-feature-vectors}. We also searched through a neural network of depths 1, 2 or 3 where each layer is densely connected with 10 neurons each. The output is a one-hot encoding of the current gear position. We used Tensorflow to train these models, and Tensorflow Lite to run them on Android \cite{abadi_tensorflow:_2016}.
+
+\subsection{Engine RPM} 
+The engine RPM is related to the vehicle speed and the 
+current gear position via:
+\begin{equation}
+\textrm{RPM} = v * (F_r * G_r) / T,
+\end{equation} 
+where $v$ is vehicle speed in meters per minute, $F_r$ is 
+the final drive ratio, $G_r$ is the transmission gear ratio and $T$ is tire circumference in meters. We learned $F_r$, $G_r$ and $T$ using publicly published parameters by the vehicle manufacturer \cite{ford_2017_2018}.
+We used the gear estimate from our gear position estimation described above. 

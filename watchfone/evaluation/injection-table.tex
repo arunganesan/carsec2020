@@ -1,0 +1,27 @@
+\bgroup
+\def\arraystretch{\tablepadding}
+\begin{table*}[h]
+\centering
+\scriptsize
+\begin{tabu} to 0.45\textwidth {|c|c|c|c|}
+	\hline
+     & \textbf{Sensor} & \textbf{Values} & \textbf{Rationale} \\ \hline
+     & Speed & \{ 4, 10, 25, 50, 100 \} kmph & Used in manipulating other ECUs E.g. \cite{miller_adventures_2013}. \\ \cline{2-4}
+     & Steer. Wheel Angle & \{ -100, -50, -10, 10, 50, 100 \} degrees & Trick adaptive headlight into shining in the wrong location. \\ \cline{2-4}
+     & Gear & \{ -1, 1, 4, 6 \} gear & Used in manipulating other ECUs, e.g., \cite{miller_adventures_2013}. \\ \cline{2-4}
+     & Engine RPM & \{ 100, 1000, 2000, 5000 \} RPM & Low engine RPM used to put ECUs into diag. mode \cite{miller_advanced_2016}. \\ \cline{2-4}
+     \multirow{-5}{*}{\begin{sideways}Sudden, Grad.\end{sideways}} & Fuel level & \{ 15.4 \} gallons & Trick driver into emptying gas tank, e.g., \cite{koscher_experimental_2010}.\\ \hline
+     %
+     %
+     %
+	& Speed & \{ -50, -10, +10 \} kmph & Trick driver into going faster. E.g., \cite{koscher_experimental_2010}. \\ \cline{2-4}
+    & Steer. Wheel Angle & \{ +10, +50 \} degrees &  \\ \cline{2-4}
+    & Odometer & \{ -1000 \} km & 
+    Trick driver into missing oil change dates. \\ \cline{2-4}
+     \multirow{-4}{*}{\begin{sideways}Delta\end{sideways}} & Fuel Level & \{ +0.5 \} gallons & Trick driver into driving without sufficient fuel level, e.g., \cite{koscher_experimental_2010} \\ \hline
+\end{tabu}
+\caption{Specific injection values used in our analysis. The first five attacks were injected as a sudden or gradual injection. The last four were injected immediately as a delta of the actual value. See Sec.~\ref{watchfone/eval/falsification/injection} for more details. These injection values were inspired by existing literature and extend beyond them.}
+\label{tab:injection-details}
+% \vspace{-0.5in}
+\end{table*}
+\egroup

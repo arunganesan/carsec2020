@@ -1,0 +1,59 @@
+% !TeX root = ./main.tex
+
+Vehicles are built with many ECUs which are responsible for different vehicular
+functions and usually communicate with each other using one or more Controller 
+Area Network (CAN) buses. 
+These buses are broadcast-based and use a decentralized protocol for access
+ arbitration and real-time communication. %In some cases, ECUs are directly connected to each other --- such is the case for the collision-prevention system and the anti-lock braking 
+%system in some vehicles \cite{miller_advanced_2016}.
+
+Sensor-falsification attacks use these communication networks to broadcast 
+sensor data masquerading as one of the ECUs. Since the CAN protocol does not
+identify/authenticate senders/receivers, an attacker capable of writing to CAN
+bus can achieve this 
+\cite{koscher_experimental_2010,miller_adventures_2013,miller_advanced_2016}. 
+For example, an attacker can gain write access using an 
+Internet-facing Infotainment system, forced Bluetooth pairing or even a 
+corrupted audio file with a firmware update \cite{checkoway_comprehensive_2011}. 
+Once successful, the attacker can mount an attack which involves writing 
+falsified messages to the CAN bus. The intention of this attack may be to 
+confuse the user (e.g., \cite{miller_adventures_2013} p.32, 
+\cite{koscher_experimental_2010} p.456), or to control the vehicle 
+(e.g., \cite{miller_advanced_2016} p.27), as enumerated in Table~\ref{tab:attacks} 
+and categorized in Fig.~\ref{fig:taxonomy}.
+
+\bgroup
+\def\arraystretch{\tablepadding}
+\begin{table*}
+\centering
+\scriptsize
+\begin{tabu} to 0.45\textwidth {|c|c|c|c|c|c|}
+	\hline
+    \rowcolor{black!15}
+     \textbf{Ref.} & \textbf{ID} & \textbf{Page \#} & \textbf{Target ECU} & \textbf{Sensor spoofed} & \textbf{Purpose of attack} \\ \hline
+     & 1 & 32 & Instrument Cluster (IC) & Speed & Confuse user \\ \cline{2-6}
+     & 2 & 32 & IC & Engine RPM & Confuse user \\ \cline{2-6}
+     & 3 & 34 & IC & Odometer & Confuse user \\ \cline{2-6}
+     & 4 & 38 & Pre-Collision System (PCS) & RADAR-state & Sudden brake, disable gas pedal \\ \cline{2-6}
+     & 5 & 43 & Intel. Park. Assistant System (IPAS) & Gear, Speed & Control steering \\ \cline{2-6}
+     & 6 & 45 & Lane Keeping Assistant (LKA) & Camera-state & Control steering \\ \cline{2-6}
+     \multirow{-7}{*}{\cite{miller_adventures_2013}} & 7 & 59 & IC & Fuel gauge & Confuse user \\ \hline
+     %
+     %
+     & 8 & 455 & IC & Fuel gauge & Confuse user \\ \cline{2-6}
+     \multirow{-2}{*}{\cite{koscher_experimental_2010}} & 9 & 456 & IC & Speed  & Confuse user \\ \hline 
+     %
+     %
+     & 10 & 84 & IC & Engine RPM & Confuse user \\ \cline{2-6}
+     \multirow{-2}{*}{\cite{miller_remote_2015}} & 11 & 85 & Anti-lock Brake System (ABS) & Imminent collision state  & Cause ABS to apply brakes \\ \hline
+     %
+     %j
+	& 12 & 7 & IC & Speed & Confuse user \\ \cline{2-6}
+    & 13 & 23 & Power Steer. Ctrl. Module (PSCM) & Engine RPM & Put ECU in diagnostic mode \\ \cline{2-6}
+     \multirow{-3}{*}{\cite{miller_advanced_2016}} & 14 & 27 & Park. Assistance Module (PAM) & Speed & Control steering \\ \hline
+     \end{tabu}
+    \caption{Example CAN bus injection attacks which require falsifying vehicular sensors.}
+    \vspace{-0.3in}
+    \label{tab:attacks}
+\end{table*}
+\egroup

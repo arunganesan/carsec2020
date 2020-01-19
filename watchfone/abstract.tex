@@ -1,0 +1,11 @@
+% !TeX root = ./main.tex
+
+Most, if not all, existing vehicular security enhancements require deep modification of vehicles or rely solely on the information {\em within} a vehicle to validate vehicular sensors. 
+To bring car-security assistance to today's drivers, we propose \watchfone{} %(Phone as a Car Security Assistant) 
+which uses the driver's smartphone sensors to detect vehicular sensor falsification attacks. 
+%
+\watchfone{} uses multiple sensing modalities available in the smartphone to estimate and cross-validate sensor values reported by the vehicle. If any of the values present within the vehicle's communication networks deviates from the \watchfone{}-estimated values --- due to sensor falsification or malfunction --- it raises an alarm and reports an error to the driver. 
+%
+\watchfone{} is shown to detect sensor--falsification attacks with high true positive rate (ranging from \suddenXspeedXTPRforFPRHalfPercent{}\% for speed to \suddenXrpmXTPRforFPRFivePercent{}\% for RPM falsification) while keeping the false positive rates very low (often less than 1\% FPR).
+%
+We demonstrate through a real implementation that \watchfone{} can estimate vehicular sensors and detect falsified sensors with very low computational overhead and low time latency.

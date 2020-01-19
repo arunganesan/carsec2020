@@ -1,0 +1,74 @@
+\documentclass[acmlarge]{acmart}
+%\documentclass[letterpaper]{sig-alternate}
+
+%\setlength{\paperheight}{11in}
+%\setlength{\paperwidth}{8.5in}
+
+\input{watchfone/packages}
+\newcommand{\watchfone}{\texttt{CarSec}}
+\newcommand{\etal}{\textit{et al.}}
+\input{watchfone/results}
+
+\definecolor{highlightColor}{rgb}{0,0,0}
+% \definecolor{highlightColor}{rgb}{0,0,1}
+
+\sloppy
+
+
+
+\begin{document}
+\title{\watchfone{}: Using Smartphones as Car Security Assistants}
+\author{Anonymous Authors}
+\maketitle
+
+\subsection*{Abstract}
+\input{watchfone/abstract}
+
+\section{Introduction}
+\label{intro}
+\input{watchfone/introduction}
+
+\section{Related Work}
+\label{related}
+\input{watchfone/related}
+
+\section{Background and Threat Model}
+\label{background}
+\input{watchfone/background}
+ 
+\subsection{Why Smartphones?}
+\label{background/whyphones}
+\input{watchfone/whysmartphones}
+
+\subsection{Adversary Model}
+\label{background/advmodel}
+\input{watchfone/advmodel}
+
+\section{System Model}
+\label{system}
+\input{watchfone/system}
+
+\section{Evaluation}
+\label{eval}
+\input{watchfone/evaluation/eval}
+
+\section{Discussion}
+\label{discussion}
+\input{watchfone/discussion}
+
+\section{Conclusion}
+\label{conclusion}
+\input{watchfone/conclusion}
+
+\bibliographystyle{acm}
+\bibliography{references}
+
+% \newpage
+% \appendix
+% \section{Revision in Compliance with Reviews}
+% \input{watchfone/changes.tex}
+
+
+
+
+\end{document}

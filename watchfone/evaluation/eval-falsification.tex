@@ -1,0 +1,87 @@
+Next, we use the best settings learned from the estimation accuracy evaluation (Sec.~\ref{watchfone/eval/estimation}) to evaluate 
+the of sensor-falsification detection accuracy. This evaluation first involves injecting data into the CAN bus to mimic realistic attacks (Sec.~\ref{watchfone/eval/falsification/injection}) and then detecting intrusion using \watchfone{} (Sec.~\ref{watchfone/eval/falsification/detection}).
+
+\subsubsection{CAN-bus Injection}
+\label{watchfone/eval/falsification/injection}
+We injected data into the collected data traces to simulate {\it sudden}, {\it gradual}, and {\it delta} injections. The attacker might resort to one of these three forms of injection depending on the intended outcome. For example, in \cite{miller_advanced_2016} p.23, an attacker spoofs false RPM values to put an ECU into diagnostic mode. In this case, the purpose of the attack is to quickly put the vehicle in diagnostic mode, so the attacker would flood the CAN bus with the target RPM value, a \textit{sudden} injection. Alternatively, in \cite{miller_adventures_2013} p.38 or \cite{koscher_experimental_2010} p.458, the attacker gradually changes the falsified values to control the vehicle or stealthily confuse the user, a \textit{gradual} injection. An attacker might also falsify values that are consistently different from the current value so as to mimic normal but incorrect behavior. For example, in \cite{koscher_experimental_2010} p.458, the attacker falsified the speedometer value to be 10mph below the actual speed of the car, a \textit{delta} injection. Table~\ref{tab:injection-details} details the injection types, sensors, and values.
+
+\input{watchfone/evaluation/injection-table.tex}
+
+\begin{figure*}
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{watchfone/figures/10-aggregate-ids/10-aggregate-ids-acc-for-noan-fixed-parameters-sudden-all.pdf}
+        \caption{{\it Sudden attack} where the attacker \\ immediately sets the sensor value \\
+        to the target value.}
+    \end{subfigure}
+    %
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{watchfone/figures/10-aggregate-ids/10-aggregate-ids-acc-for-noan-fixed-parameters-gradual-all.pdf}
+        \caption{{\it Gradual attack} where the \\sensor value gradually changes to \\the target
+        over a span of 10 seconds.}
+    \end{subfigure}
+    %
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{watchfone/figures/10-aggregate-ids/10-aggregate-ids-acc-for-noan-fixed-parameters-delta-all.pdf}
+        \caption{{\it Delta attack} where the attacker sets the injected value to a offset of the \\
+        actual value.}
+    \end{subfigure}
+    \caption{The true positive rate (TPR) and false positive rate (FPR) of different conditions. {\color{highlightColor} The legends are consolidated for simplicity. The black and gray lines are
+    correspondingly for TPR and FPR. The different markers represent bounding the FPR to four different values.}
+    We considered gradual, sudden, 
+    and delta injections. See Sec.~\ref{watchfone/eval/falsification/injection} for more details. For each condition, we restricted the maximum FPR and adjusted the parameters to yield the highest TPR. As we reduced the FPR requirement, the TPR also suffered.}
+    \label{fig:ids-error}
+\end{figure*}
+
+In all three cases of injection, we measured the difference between smartphone-estimated value and CAN-bus reported value, and counted the instances of true positive (TP), true negative (TN), false positive (FP) and false negative (FN). We used the normal case without injection to count FP and TN, and the injected case to count TP and FN. In what follows, we compare the True Positive Rate (TPR) and False Positive Rates (FPR) of various conditions. The TPR (also known as {\em recall}) is defined as $TP/(TP+FN)$ and the FPR is defined as $FP/(FP+TN)$. Configuring \watchfone{} results in a tradeoff between TPR and FPR. A cautious driver would prefer to increase TPR at the risk of more alarms. However, if the FPR is too high, it will raise too many false alarms and might lead to the driver ignoring the alarms during a real attack. 
+
+\subsubsection{Warning Threshold}
+\label{watchfone/figures/sec:parametersearch}
+\watchfone{} uses two parameters before flagging an on-going attack --- the attack {\it \bf magnitude} and {\it \bf duration}. By adjusting these parameters, \watchfone{} can be configured to trade off false positive rates (FPR) with true positive rates (TPR). The first parameter specifies a threshold difference between the estimated \watchfone{} and OBD values before flagging it as anomalous. This can be caused by an attack, by a faulty sensor, or by estimation inaccuracy due to inaccurate smartphone sensors. The second parameter disambiguates this by looking for a sustained deviation from expected values. The first parameter is in a different unit for each sensor. For example, the steering wheel angle sensor uses ``degrees.'' 
+The second parameter is in seconds.
+
+We search through 100 combinations of both parameters and calculate the receiver operating characteristic (ROC) curve. We set the {\it \bf magnitude} threshold to one of 10 different values, defined independently for each sensor, and set the {\it \bf duration} threshold to one of 10 different values equally ranging from 100ms to 5s.  Fig.~\ref{fig:lattice-search-example} is the ROC curve for speed-falsification detection. With the ROC curve, we search for the configuration which yields the maximum TPR for bounded FPR values, where FPR is bounded to $\{ 0.1, 0.5, 0.01, 0.001 \}$ 
+
+\begin{figure}[h]
+  \includegraphics[width=0.45\textwidth]{watchfone/figures/11-Ford-Fiesta-2017-openxc_speed.pdf}
+  \caption{ROC curve of 100 different combinations of the two parameters --- attack magnitude and duration. For each combination, we calculate the FPR and TPR. A similar ROC curve was computed for each of the 6 sensor estimations.}
+  \label{fig:lattice-search-example}
+  \vspace{-0.2in}
+\end{figure}
+
+\subsubsection{Detection Accuracy}
+\label{watchfone/eval/falsification/detection}
+Fig.~\ref{fig:ids-error} shows the FPR and TPR for different attacks, and detection thresholds. \watchfone{} is able to most accurately detect attacks which falsify speed, fuel level or odometer values. 
+
+\paragraph{Speed} For \textit{sudden} falsification attack, \watchfone{} can detect speed injection attacks with TPR=\suddenXspeedXTPRforFPRHalfPercent{}\%, FPR=\suddenXspeedXFPRforFPRHalfPercent{}\% and for a \textit{delta} attack, \watchfone{} can detect the injection with TPR=\deltaXspeedXTPRforFPRHalfPercent{}\% and FPR=\deltaXspeedXFPRforFPRHalfPercent{}\%. However, if the attacker \textit{gradually} spoofs speed values to the desired target value, \watchfone's accuracy drops to TPR=\gradualXspeedXTPRforFPRHalfPercent{}\% at FPR=\gradualXspeedXFPRforFPRHalfPercent{}\%. If the user is willing to tolerate more false alarms, \watchfone{} can detect gradual speed spoofing attacks at TPR=\gradualXspeedXTPRforFPRTenPercent{}\% at FPR=\gradualXspeedXFPRforFPRTenPercent{}\%. 
+
+\paragraph{Fuel-level} We found a similar pattern in the fuel-level attacks. \watchfone{} can detect a fuel-level delta attack at TPR=\deltaXfuelXTPRforFPROnePercent{}\% at FPR=\deltaXfuelXFPRforFPROnePercent{}\%, and a sudden attack at TPR=\suddenXfuelXTPRforFPROnePercent{}\% at FPR=\suddenXfuelXFPRforFPROnePercent{}\%. 
+However, it only detects the gradual attack at TPR=\gradualXfuelXTPRforFPROnePercent{}\% at FPR=\gradualXfuelXFPRforFPROnePercent{}\%. 
+In the subsequent analysis, we uncovered the reason for poorer performance in detecting gradual-level attacks. In a gradual attack, injected values closely resembles the actual values during initial stages of the attack. Only after a few seconds of the 
+10-second gradual attack does the value start to differ. We decouple this factor and study the detection accuracy by the percentage of injection in Sec.~\ref{watchfone/eval/falsification/minimum-detectable-attack}.
+
+\paragraph{Steering Wheel Angle} \watchfone{} is able to detect delta steering wheel injection attacks at TPR=\deltaXsteeringXTPRforFPRHalfPercent{}\% for FPR=\deltaXsteeringXFPRforFPRHalfPercent{}\%, sudden-injection attacks at TPR=\suddenXsteeringXTPRforFPRHalfPercent{}\% for FPR=\suddenXsteeringXFPRforFPRHalfPercent{}\%, and gradual-injection attacks at TPR=\gradualXsteeringXTPRforFPRHalfPercent{}\% for FPR=\gradualXsteeringXFPRforFPRHalfPercent{}\%. 
+The steering-wheel detection is less accurate for gradual injection attacks due to the inherent difficulty of estimating the steering wheel angle using IMU sensors. This is especially a problem when the vehicle is traveling very slowly or stopped at a stop sign. The driver may move the steering wheel significantly but the IMU sensor will be unable to estimate these values. Therefore, in order to improve the TPR, we have to accommodate a much higher FPR, which may not be acceptable for drivers. %We explore and decouple this relationship in Sec.~\ref{watchfone/figures/sec:attack-by-consequence}. 
+
+\paragraph{Gear Position} \watchfone{} can accurately detect any gear injection attacks --- TPR=\suddenXgearXTPRforFPRHalfPercent{}\%, FPR=\suddenXgearXFPRforFPRHalfPercent{}\% for sudden injection and TPR=\gradualXgearXTPRforFPRFivePercent{}\%, FPR=\gradualXgearXFPRforFPRFivePercent{}\% for gradual injection. Contrary to other sensors, even a gradual gear injection can be detected with high accuracy because of the discrete nature of gear values. The smallest injection can change the gear value by 1 gear position. As seen in Fig.~\ref{fig:estimation-accuracy}, we can estimate the gear position correctly almost 80\% of the time.
+
+\paragraph{Engine RPM} Mirroring what we saw in the estimation accuracy, \watchfone{} has the most difficulty in detecting RPM injection attacks. Sudden attacks have TPR=\suddenXrpmXTPRforFPRFivePercent{}\%, FPR=\suddenXrpmXFPRforFPRFivePercent{}\% and gradual attacks have TPR=\gradualXrpmXTPRforFPRTenPercent{}\%, FPR=\gradualXrpmXFPRforFPRTenPercent{}\%. 
+This resembles our estimation error which is caused by tire slip, as shown in Fig.~\ref{fig:tire-slip-pdfs}. In the ideal case, the RPM estimation without considering tire slip is still incorrect by just over 1000 RPM values in the 99th percentile. 
+If we only look at injection between 
+1000--1200 RPM values, we can detect them with \magXgradualXrpmXfiveXTPR{}\% TPR. We further investigate the relationship between attack magnitude and detection rate in the next section.
+
+\subsubsection{Smallest Detectable Attack}
+\label{watchfone/eval/falsification/minimum-detectable-attack}
+\input{watchfone/evaluation/minimum-attack.tex}
+
+\subsubsection{Key Findings}
+The key results of intrusion detection accuracy evaluation
+can be summarized as follows.  {\color{highlightColor}These findings
+are key contributions of our work, which is the first to 
+investigate using phone sensors to detect CAN-bus injection attacks}.
+\begin{itemize}
+    \item Mirroring what we found in estimation evaluation (Section~\ref{watchfone/eval/estimation}), \watchfone\ can detect injection to the vehicle speed, fuel level, steering wheel angle, gear and odometer with high true positive rate (TPR),  
+    but has a lower TPR for engine RPM.
+    \item The TPR depends on the nature of the attack. It is lowest during a gradual attack - this is due to injections of very low magnitude at the onset of the attack.
+    \item The TPR increases as the attack magnitude increases and starts to starts to exceed the estimation error.
+\end{itemize}

@@ -1,0 +1,131 @@
+% !TeX root = ./main.tex
+%Background + A pressing need: Car security is in danger
+Cyber attacks on cars are now a very real and serious threat. 
+In recent years, researchers have demonstrated numerous 
+vulnerabilities which allow an attacker to take control of 
+a vehicle and put drivers and passengers at peril \cite{checkoway_comprehensive_2011,foster_fast_2015,miller_adventures_2013,miller_advanced_2016}. 
+Most of these attacks involve injecting \textit{falsified sensor data} 
+into the Controller Area Network (CAN), the \textit{de facto} 
+communication network within a vehicle, and hence the first and foremost
+step in their defense is to detect these falsified sensor values.
+
+% The pressing need
+While there are many proposals of increased security in future vehicles, 
+we need to enhance security and safety in cars on the roads today. In 
+particular, we need a system which can be used immediately by passengers
+to enhance their sense of confidence 
+in the security and safety of their vehicle.
+
+% Why others failed to fill the need: They fail to bring it to cars NOW
+\textbf{State-of-the-art.} Existing security assistant proposals fail to
+meet this pressing need of increased security in today's cars. They usually
+detect these in-vehicle attacks by modeling packet-arrival characteristics 
+within the vehicle \cite{cho_fingerprinting_2016,muter_structured_2010} or 
+the relationships between in-vehicle sensors \cite{cho_cps_2015,ganesan_exploiting_2017}. 
+If the vehicle is compromised, both classes of security assistants suffer 
+from untrustworthy data since they both rely on in-vehicle sensor data. 
+There has also been a strong commercial push for vehicular intrusion detection 
+systems, but they all require deep integration with the vehicle hardware, 
+making their integration with existing vehicles prohibitively expensive \cite{arilou_automotive_2018,argus_cyber_security_argus_2018,towersec_harman_2018}. 
+
+\begin{figure}[t]
+  \includegraphics[width=\textwidth]{watchfone/figures/frontfig-2.pdf}
+  \caption{Three smartphone sensors are used to infer six 
+  different vehicular properties. \watchfone{} compares these 
+  inferred values with those reported by the vehicle to detect \textit{sensor-falsification attacks}.}
+  \label{fig:estimate-sensors-pic}
+\end{figure}
+
+% How you fill the need: Carsec - Phone as a Car Security Assistant
+\textbf{Proposed Solution.} We propose a new security assistant called \watchfone{} to fill this need. 
+The first step of many of the vehicular attacks reported in literature involves injecting \textit{falsified sensor data} 
+into the CAN bus. \watchfone{} independently acquires these sensor values using 
+the \textit{smartphone's sensors} and cross-validates them with what is seen in 
+the CAN bus. By doing so, \watchfone{} adds a second layer of assurance in the
+vehicle's sensor values on CAN, and can quickly identify when \textit{sensor 
+falsification} is taking place. \watchfone{} can be used in tandem with other 
+security measures to detect and defend against the emerging threat of vehicular 
+cyber attacks. 
+
+Smartphones have proven successful in assisting with other vehicular tasks such as dangerous driving detection 
+\cite{hong_smartphone-based_2014, meseguer_drivingstyles:_2013, li_dangerous_2016, yu_fine-grained_2017, enriquez_canopnr:_2012}, road monitoring \cite{eriksson_pothole_2008, hu_smartroad:_2015, seraj_roads:_2016, zheng_u-air:_2013, ganti_greengps:_2010}, and trajectory mining \cite{coric_crowdsensing_2013, wang_crowdatlas:_2013, carisi_enhancing_2011, liu_mining_2012}. 
+We expand the use of smartphones to enhance \textit{vehicular security} by detecting sensor-falsification attacks. 
+To the best of our knowledge, this is the first application of smartphones for vehicular security assistance.
+
+One of the main advantages of \watchfone{} is its ease of deployment 
+at no additional cost. A driver simply installs the \watchfone{} app from the app 
+market, and pairs it with a Bluetooth OBD dongle which reads values from the 
+vehicle's CAN bus.  The {\em read-only} OBD dongle simply relays the information 
+it sees in the CAN bus to the phone, thereby not contributing to the attack surface. 
+% compromised dongles are addressed in the adversary model section
+\watchfone{} runs automatically in the background to independently acquire vehicle 
+sensors on the CAN bus via a dongle and cross-validate them. Since almost everyone 
+carries a smartphone these days, we can use both driver's and passenger's phones to
+increase the available sensor redundancy at no additional cost. 
+
+% One of the main selling points of this paper
+By implementing \watchfone{} on a smartphone, we provide this additional security 
+to drivers today. The smartphone serves as an external source of knowledge about 
+vehicular dynamics, thereby overcoming the above-mentioned limitation of sole-reliance
+on in-vehicle sensor data. Furthermore, \watchfone{} capitalizes on the existing 
+hardware and computing power of smartphones. This can be used in addition to commercial
+solutions, if any, which provide enhanced protection but require deeper and more
+expensive integration with the vehicle. 
+
+% Why is your solution interesting and challenging
+\textbf{Key Challenges and Solutions.} In order to use smartphones to detect vehicular
+sensor-falsification attacks, we have to estimate vehicular values and compare them 
+with the sensor values on the CAN bus.
+
+\paragraph{Challenges in Estimating Vehicular Sensor Values} \watchfone{} uses the
+smartphone's multifaceted sensors to cross-validate vehicular sensors reported on the
+CAN bus. Specifically, it uses 3 widely-found smartphone sensors (Inertial Measurement
+Unit (IMU), magnetometer, and GPS) to estimate 6 vehicular sensors (gear, engine RPM,
+speed, steering wheel angle, odometer, and consumed fuel).
+
+This is a challenging task due to the lack of a direct mapping between smartphone and 
+vehicular sensor values. For example, the steering wheel angle has some relation to the 
+angular motion of the vehicle, but this is not directly observable by the smartphone. 
+To address this, we used vehicle's physical dynamics models (e.g., Ackerman model 
+\cite{liu_bigroad:_2017}), publicly available vehicle specs from the OEMs (e.g., gear 
+ratios), and sensor fusion techniques (e.g., complementary filter) to 
+translate the smartphone's measurements to the vehicle sensors.
+
+\paragraph{Challenges in Evaluating Falsification Attacks} There exists a dearth of 
+evaluation metrics for CAN-bus injection or falsification attacks, even though injection 
+attacks are often a necessary step before achieving vehicular compromise. To solve this 
+lack of benchmarks, we survey existing literature on vehicular cyber-attacks and identify
+some of the more common sensor-falsification attacks. We categorize this into different 
+types of falsification attacks, and evaluate \watchfone{} against these attacks to demonstrate
+its effectiveness in a realistic scenario.
+
+% Key results:
+\textbf{Key Findings.} 
+We have implemented \watchfone{} in Android and evaluated it against sensor-falsification
+attacks. We evaluated \watchfone{} by injecting three types of sensor-falsification attacks reported in 
+literature --- {\em sudden}, {\em gradual}, and {\em delta} injections --- in real-world driving traces.  
+\watchfone{} is shown to be capable of detecting falsifications of 6 vehicular sensors 
+with different levels of true positive rate (TPR), ranging from \suddenXspeedXTPRforFPRHalfPercent{}\% 
+for speed sensors to \suddenXrpmXTPRforFPRFivePercent{}\% for RPM falsifications,
+with very low false positive rate (FPR), 
+often set to less than 1\% FPR. 
+\watchfone{} can most accurately detect speed,  gear position, fuel and odometer falsifications.
+
+Furthermore, \watchfone{} only consumes $\approx$8\% of the CPU on average, even while performing expensive neural 
+network-based sensor estimation algorithms.
+
+This paper makes the following main contributions:
+{\color{highlightColor}
+\begin{itemize}
+\item {\em Extensive evaluation of vehicle sensor estimation algorithms under diverse realistic situations}. We show the robustness of vehicle sensor estimation algorithms on 6 different vehicles, 912 miles of driving, and under 4 different common uses of the phone by 7 different passengers. 
+
+\item {\em Thorough characterization of CAN-bus sensor falsification attacks}. We survey the literature on vehicular cybersecurity to create a taxonomy of different attacks on vehicular CAN bus. This taxonomy of attacks will guide future research into defenses against such attacks.
+
+\item {\em Development and evaluation of \watchfone\, a novel system to detect CAN-bus injection attacks}. We use phone-based vehicle sensor estimation to detect CAN-bus injection attacks. To the best of our knowledge, this is the first to apply phone-based vehicle estimation algorithms for the detection of CAN-bus sensor falsification attacks. We also demonstrate its computational feasibility with an efficient Android implementation and provide source code facilitating future follow-up research in this area. 
+\end{itemize}}
+
+\textbf{Paper Organization.} The paper is structured as follows. 
+Sec.~\ref{related} reviews other related IDS solutions while Sec.~\ref{background} presents the necessary background and 
+attack model. Next we describe \watchfone{} in Sec.~\ref{system} 
+and evaluate it against simulated and realistic attacks in Sec.~\ref{eval}. Finally, we discuss limitations of current \watchfone{} and future work in Sec.~\ref{discussion},
+and conclude the paper in Sec.~\ref{conclusion}. 

@@ -1,0 +1,22 @@
+% !TeX root = ./main.tex
+\subsection{Phone-based Estimation of Vehicular Sensors} 
+There are numerous studies which estimate vehicular sensors using phone sensors for dangerous driving detection \cite{hong_smartphone-based_2014, meseguer_drivingstyles:_2013, li_dangerous_2016, yu_fine-grained_2017, enriquez_canopnr:_2012}, road monitoring \cite{eriksson_pothole_2008, hu_smartroad:_2015, seraj_roads:_2016, zheng_u-air:_2013, ganti_greengps:_2010}, and trajectory mining \cite{coric_crowdsensing_2013, wang_crowdatlas:_2013, carisi_enhancing_2011, liu_mining_2012}. 
+In contrast to these studies, we explore if phone sensing can be used to enhance security. Thus, the evaluation for this exploration is very different from existing studies.
+
+\subsection{Vehicular Intrusion Detection Systems (IDS)} 
+These fall under two main categories, CAN-bus traffic characterization and vehicular sensor modeling, both of which
+essentially rely on vehicular sensors and are thus vulnerable 
+to compromise.
+
+\subsubsection{CAN-bus Traffic Characterization} M\"uter~\etal~\cite{muter_entropy-based_2011,muter_structured_2010} developed an IDS which models information-theoretic and structural patterns of the CAN bus under normal behavior. 
+During an attack, they observed that these information-theoretic properties, such as entropy, are likely to change. However, this only holds true for CAN-bus injection attacks that deviate from the normal behavior of the ECU. If the attacker is able to mount the attack without changing the behavior of the CAN bus --- 
+such as through a bus-off attack \cite{cho_error_2016} 
+or Bootrom attack \cite{miller_advanced_2016} --- it may not result in a significant change in the entropy score and thereby evade detection. In contrast, \watchfone{} does not model the CAN-bus traffic. It externally validates the sensor values using their estimation based on smartphone sensor readings. This makes it possible to detect sensor falsification attacks even in the presence of no abnormal CAN-bus traffic.
+
+Cho and Shin~\cite{cho_fingerprinting_2016} used clock-based fingerprinting of ECUs to identify misbehaving ECUs, which is orthogonal to \watchfone. Once \watchfone{} is used to determine that an attack is taking place, we can use the system presented in \cite{cho_fingerprinting_2016} to pinpoint the culprit ECU.
+
+\subsubsection{In-Vehicular Intrusion Detection Systems} 
+Other IDSes model the normal behavior of the vehicle by comparing with other vehicle sensors on the CAN bus. For example, Ganesan~\etal~\cite{ganesan_exploiting_2017} use cross-correlation to constrain the possible values of different ECUs within the CAN bus. Wasicek~\etal~\cite{wasicek_recognizing_2015} use neural networks to model the relationship between engine RPM, torque and speed. Cho~\etal~\cite{cho_cps_2015} used a random forest to model the brake behavior in different road and weather conditions. All these approaches rely on sensors within the CAN bus and may be susceptible to the same adversary who can inject data into the CAN bus. In contrast, \watchfone{} uses the smartphone sensors, which are an external source of knowledge, to cross-validate the internal sensors within the vehicle. Even if the vehicle has been compromised, this additional source of redundancy can provide a measurement of true sensor values.
+
+In addition to providing an external source of knowledge, smartphones are also freely and readily available to enhance car security. Furthermore, they are personal devices which form a natural interface to the user. If there is a problem with your car, your phone can warn you and help you take preventative and diagnostic measures.
+

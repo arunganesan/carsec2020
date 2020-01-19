@@ -1,0 +1,15 @@
+We measured the \textit{minimum injection} that \watchfone{} can detect. This analysis helps us disentangle the type of injection from our detection method. Fig.~\ref{fig:smallest-magnitude-injection} shows the result of this analysis.
+
+\begin{figure}[ht]
+{\includegraphics[width=\linewidth]{watchfone/figures/17-smallest-injection.pdf}}
+{\caption{The left figure shows TPR for varying amounts of injection magnitude. The right figure shows varying \textit{fixed} values of injection. For all cases, FPR was less than 5\% and therefore omitted. Figure best seen in color.}\label{fig:smallest-magnitude-injection}}
+%\Description[Detection accuracy for varying injection magnitude]{Detection accuracy for varying magnitudes of injection. Compared for both increasing delta injection and increasing fixed-value injection.}
+\vspace{-0.1in}
+\end{figure}
+
+As shown in Fig.~\ref{fig:smallest-magnitude-injection}, we injected different magnitude values for each sensor deviating from the actual value. The $X$-axis is the magnitude of the injection where each unit is multiplied by the scale specific to that sensor, shown in the figure legend. We can detect speed injection once it exceeds 10kmph. 
+Similarly, the minimum bound threshold for other sensors are: 
+engine RPM=1000 RPM, Gear=2, steering=$22.5^{\circ}$, odometer=4km 
+and fuel level=0.9L.
+
+On the left figure, we show varying magnitudes of a {\it delta} injection. As the injection is close to 0 delta (i.e. the true value), the TPR drops to 0. On the right figure, we show the TPR for fixed injection values. If the fixed value is close to the actual value (e.g., setting engine RPM to $\approx$1500) then the TPR becomes very low. 

@@ -1,0 +1,38 @@
+\begin{figure*}[!htbp]
+   \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{watchfone/figures/04-all-good-gps/our_speed-workspace-cdf.pdf}
+        \caption{Speed: \\ \hspace*{0.2in} \{50th, 95th\}=\{\estSpeedMedian, \estSpeedHigh\}kmph}
+    \end{subfigure}
+    %
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{watchfone/figures/04-all-good-gps/odometer-workspace-cdf.pdf}
+        \caption{Odometer: \\ \hspace*{0.2in} \{50th, 95th\}=\{\estOdometerMedian,\estOdometerHigh\}km}
+    \end{subfigure}
+    %
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{watchfone/figures/04-all-good-gps/fuel-workspace-cdf.pdf}
+        \caption{Fuel level: \\ \hspace*{0.2in}
+       \{50th,95th\}=\{\estFuelMedian, \estFuelHigh\} gallon}
+    \end{subfigure}
+    %
+    \begin{subfigure}[b]{0.3\textwidth}
+    \RaggedRight
+        \includegraphics[width=\textwidth]{watchfone/figures/04-all-good-gps/gear_nn-workspace-cdf.pdf}
+        \caption{Gear: \\ \hspace*{0.2in}
+        \{50th, 95th\}=\{\estGearMedian, \estGearHigh\} gear}
+    \end{subfigure}
+    %
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{watchfone/figures/04-all-good-gps/rpm_nn_two-workspace-cdf.pdf}
+        \caption{Engine RPM: \\ \hspace*{0.2in} \{50th, 95th\}=\{\estRpmMedian,\estRpmHigh\}RPM}
+    \end{subfigure}
+    %
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{watchfone/figures/04-all-good-gps/our_steering_two-workspace-cdf.pdf}
+        \caption{Steering wheel angle: \\ \hspace*{0.2in}\{50th, 95th\}=\{\estSteeringMedian, \estSteeringHigh\}$^\circ$}
+    \end{subfigure}
+
+    \caption{Estimation error of vehicular sensors using \watchfone. Each CDF shows the estimation error of each trip along with the average error in a thick black line.}
+    \label{fig:estimation-accuracy}
+\end{figure*}

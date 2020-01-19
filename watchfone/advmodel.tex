@@ -1,0 +1,60 @@
+% !TeX root = main.tex
+
+We model our adversary after what is normally found in related literature. At 
+the bare minimum, the adversary has write access to the CAN bus (e.g., through 
+the UConnect infotainment system, as demonstrated in \cite{miller_remote_2015})
+and uses this access to broadcast falsified sensor values. S/he uses falsified 
+sensor readings to confuse the user or force ECUs within the vehicle to misbehave. 
+The attacks can vary in how quickly they are accomplished and must be detected. 
+
+\subsubsection{Trusted Components}
+In order to run \watchfone, the driver must carry a smartphone equipped with IMU and 
+GPS sensors. We assume the smartphone is not compromised and is mounted on the 
+windshield or placed in the cup holder.  Smartphone security is an active area 
+of research and there exist numerous deployed solutions to ensure that the software 
+running on a smartphone has integrity and hasn't been compromised. Besides, 
+securing smartphones is orthogonal to our work.
+
+Additionally, the driver needs to connect an OBD dongle to the OBD-II port found 
+under the steering wheel. These are cheap and widely available devices used by many 
+people for diagnostic and telematics purposes. We assume that the OBD-dongle is not 
+compromised. We envision an OBD dongle which has very limited functionality and only 
+serves to dutifully relay the information it reads on the CAN bus. A simple OBD dongle 
+which only serves the purpose of relaying information doesn't need Internet connectivity 
+and doesn't need programmability.  Although prior work has shown remote compromise 
+through the OBD dongle \cite{foster_fast_2015, miller_remote_2015}, its target was 
+dongles that have Internet connectivity and sophisticated programmability. This 
+sophistication makes them vulnerable to attacks from the Internet. 
+
+\subsubsection{Attacks to Be Covered}
+\watchfone{} detects \textit{sensor falsification attacks} which are mounted via the CAN bus 
+that can be externally cross-validated using the smartphone sensors. Sensor falsification 
+on the CAN bus is often the first step in vehicular cyber-compromise reported in literature 
+\cite{miller_advanced_2016, miller_adventures_2013, miller_remote_2015,koscher_experimental_2010}. 
+As such, it is important to detect and thwart the attacks at this stage before they 
+progress further.
+
+We assume the sensor-spoofing happens through CAN-bus injection. In other words, it 
+doesn't involve externally spoofing the sensor values via LiDAR injection or other means. 
+There are numerous examples of CAN-bus injection attacks reported in literature. For 
+example, \cite{koscher_experimental_2010} p.458 demonstrates a compound attack which 
+involves falsifying a speedometer reading and \cite{miller_adventures_2013} p.43 presents 
+a detailed attack that controls the steering wheel angle by falsifying gear and vehicle 
+speed readings. 
+
+\subsubsection{{\color{highlightColor}Attacks Not to Be Covered}}
+\watchfone{} is not designed to detect CAN-injection attacks which do not involve sensor
+falsification. For instance, \watchfone{} cannot detect CAN-injections used to lock/unlock the 
+door found in \cite{miller_adventures_2013} p.58. Additionally, \watchfone{} is not designed 
+to detect CAN-injections where the spoofed sensor value reflects the actual vehicle 
+sensor value. This happens when the spoofed value is the same as the real value or when 
+the vehicle reacts to the spoofed value and changes its state to resemble the input value 
+(e.g., \cite{miller_advanced_2016} p.22). 
+
+
+\begin{figure}[h]
+  \includegraphics[width=0.45\textwidth]{watchfone/figures/taxonomy.pdf}
+  \caption{Sensor falsification attacks can be characterized in two axes:intention and time sensitivity. 
+  The attack IDs are explained in Table~\ref{tab:attacks}.}
+  \label{fig:taxonomy}
+\end{figure}
