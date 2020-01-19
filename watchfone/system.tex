@@ -9,8 +9,7 @@ These sensors and their estimation equations are summarized in Table~\ref{tab:es
 Some of these sensor estimations require {\em per-vehicle} calibration. For example, we 
 trained a different neural network for each vehicle in our dataset for Gear estimation, and 
 loaded vehicle-specific parameters for engine RPM or fuel MPG. These must be done one time for each 
-vehicle model and can be done by the OEM before release.
-
+vehicle model and can be done by the OEM before release. \changes{\watchfone\ doesn't require {\em per-smartphone} calibration. The same vehicle-model can be loaded on different smartphones.}
 
 \begin{table}[!htb]
       \begin{subtable}{.5\linewidth}
