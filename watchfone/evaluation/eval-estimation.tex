@@ -111,7 +111,7 @@ The results are plotted in Fig.~\ref{watchfone rebuttal gps in paper}.
     \includegraphics[width=0.4\linewidth]{watchfone/revision/alpha_search.png}
     \caption{Vehicle speed estimation error for increasing high-frequency GPS noise.
     For higher GPS noise, \watchfone\ relies more and more on the accelerometer component 
-    of the complementary filter. }
+    of the complementary filter.}
     \label{watchfone rebuttal gps in paper}
 \end{figure}
 
@@ -181,18 +181,25 @@ phone's orientation.
 \watchfone{} can similarly be extended using other IoT devices such as the 
 driver's smartwatch.
 
-\pagebreak
 \input{watchfone/estimation-investigation-figures}
-\pagebreak
 
 \subsubsection{Key Findings}
-Our key findings in estimating 6 vehicular sensors using 3 phone sensors can be summarized as follows. The first three key findings reflect and corroborate similar findings in related work. The fourth key finding is an extension based on our experiments with passenger phones.
+\changes{We corroborated the error values reported in prior literature in estimating vehicle sensors \cite{liu_bigroad:_2017, cho_cps_2015}. In addition to this, we discovered three key findings from our work, summarized below.}
+
 \begin{itemize}
-    \item The phone can be used to accurately estimate the speed, steering wheel, gear position, consumed fuel level, and change in odometer.
+    \item \changes{Phone estimation algorithms work reliably even while the phone is being used for common activities such as texting or making a phone call.}
     
-    \item It is difficult to estimate engine RPM. This value cannot be directly estimated from the other sensors due to tire slip caused by external factors.
+    \item \changes{Gear position can be accurately estimated using a neural network that accepts the recent change in vehicle speed.} 
     
-    \item Error of steering wheel angle estimation and gear estimation are negatively correlated with vehicle speed --- the faster the car, the lower the estimation error.
-    
-    \item \watchfone{} can be extended to other sensing devices such as the passenger's phone. The estimation accuracy only minimally suffers while the passenger engages in common activities on their phone. 
+    \item \changes{By conditioning for various factors, we discovered that engine RPM estimation is plagued by tire slip. This is especially predominant in steep road segments or regions with high-acceleration applied to the car.}
 \end{itemize}
+
+% Our key findings in estimating 6 vehicular sensors using 3 phone sensors can be summarized as follows. The first three key findings reflect and corroborate similar findings in related work. The fourth key finding is an extension based on our experiments with passenger phones.
+% \begin{itemize}
+%     \item The phone can be used to accurately estimate the speed, steering wheel, gear position, consumed fuel level, and change in odometer.
+    
+%     \item It is difficult to estimate engine RPM. This value cannot be directly estimated from the other sensors due to tire slip caused by external factors.
+    
+    
+%     \item \watchfone{} can be extended to other sensing devices such as the passenger's phone. The estimation accuracy only minimally suffers while the passenger engages in common activities on their phone. 
+% \end{itemize}
