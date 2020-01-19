@@ -6,10 +6,10 @@ We estimated six in-vehicle sensors using smartphone sensors. We chose to focus 
 These sensors and their estimation equations are summarized in Table~\ref{tab:estimation-summary-table}. For some of them, we used estimated sensors as input to estimate additional sensors. The dependency of sensor estimation is shown in Fig.~\ref{fig:implementation-modular-dependencies}. 
 \watchfone{} cross-validates these estimations with the sensor values reported via the CAN bus to confirm or raise a warning about the reported values. We give the details of 5 sensors below. The odometer can be accurately estimated by accumulating the Haversine distance between consecutive GPS points.\footnote{\url{https://en.wikipedia.org/wiki/Haversine_formula}}
 
-{\color{highlightColor}Some of these sensor estimations require {\em per-vehicle} calibration. For example, we 
+Some of these sensor estimations require {\em per-vehicle} calibration. For example, we 
 trained a different neural network for each vehicle in our dataset for Gear estimation, and 
 loaded vehicle-specific parameters for engine RPM or fuel MPG. These must be done one time for each 
-vehicle model and can be done by the OEM before release.}
+vehicle model and can be done by the OEM before release.
 
 
 \begin{table}[!htb]
@@ -62,8 +62,7 @@ We fuse the speed estimates from both the accelerometer and GPS sensors using a 
 by the IMU sampling at 10Hz. 
 
 To use the accelerometer, we first align the phone's IMU accelerometer readings to the vehicle's direction of travel.
-{\color{highlightColor} Given consecutive GPS points, we find the angle of the GPS bearing offset from the magnetic north. We then rotate the magnetic north vector from the magnetometer by the same angle to get the vehicle pointing vector from the phone's frame of reference, called $\vec{V}$. We do this using a change of basis transformation from the plane perpendicular to the frame of reference which has basis vectors $\vec{M}, \vec{G}, \vec{G} \times \vec{M}$ where $\vec{M}$ is the magnetic north.}
-% Given the gravity vector $\vec{G} = [G_x, G_y, G_z]$, we sample 360 vectors in the plane perpendicular to the gravity vector pointing in different directions, defined as $[X = cos(\theta), Y = sin(\theta), Z = -1 / (G_z * (G_xX + G_yY)]$. The aligned speed in the direction that has the maximum correlation to the GPS-based speed is found and used as the vehicle pointing direction $\vec{V}$. 
+Given consecutive GPS points, we find the angle of the GPS bearing offset from the magnetic north. We then rotate the magnetic north vector from the magnetometer by the same angle to get the vehicle pointing vector from the phone's frame of reference, called $\vec{V}$. We do this using a change of basis transformation from the plane perpendicular to the frame of reference which has basis vectors $\vec{M}, \vec{G}, \vec{G} \times \vec{M}$ where $\vec{M}$ is the magnetic north.
 Using $\vec{G}$ and $\vec{V}$ we can calculate the rotation matrix $\boldsymbol{R}$, described in Eq.~(\ref{eqn:rotation_matrix}).
 
 
@@ -88,13 +87,13 @@ We fuse the $Y$ axis of the aligned $Acc_v$, and the delay-adjusted $GPS_{speed}
 $v_t = \alpha(v_{t-1} + Acc_v[Y] dt) + (1 - \alpha)GPS_{speed}$. We set $dt$ to 100 ms since our accelerometer sample rate is 10Hz. We search through a training set and set $\alpha$ to 0.33. 
 
 \subsection{Steering Wheel Angle}
-{\color{highlightColor}We estimate the steering wheel angle (SWA) using the yaw-rate of the gyroscope on the phone. 
+We estimate the steering wheel angle (SWA) using the yaw-rate of the gyroscope on the phone. 
 To accurately estimate the SWA, we first align the phone's coordinate system with the world coordinate 
 system, and then convert the angular rotation in the yaw axis to SWA. We use a similar rotation matrix
 as described in $\boldsymbol{R}$ above. Since we are only concerned about the yaw-rate, this only uses 
 the third row of the rotation vector --- which is the vector pointing in the direction of gravity. 
 Only using the gravity vector for world-frame alignment is more robust than using the vehicle-facing
-vector and is sufficient for SWA calculations.}
+vector and is sufficient for SWA calculations.
 
 With this new rotation matrix $\boldsymbol{R}'$, we calculate the aligned gyroscopic 
 movement in the world frame of reference by $\vec{g_w} = \boldsymbol{R}'\vec{g_p}^T$ 

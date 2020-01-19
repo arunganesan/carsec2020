@@ -102,7 +102,6 @@ increased error in up-hill versus flat roads and 178\% increased error in high-p
 
 
 \subsubsection{GPS blockage noise}
-{\color{highlightColor}
 \watchfone\ relies on GPS to estimate the vehicle speed. 
 We evaluated the effect of GPS error/noise by adding artificial noise to the dataset before estimating the vehicle speed.
 The results are plotted in Fig.~\ref{watchfone rebuttal gps in paper}. 
@@ -110,7 +109,7 @@ The results are plotted in Fig.~\ref{watchfone rebuttal gps in paper}.
 \begin{figure}
     \centering
     \includegraphics[width=0.4\linewidth]{watchfone/revision/alpha_search.png}
-    \caption{\color{highlightColor} Vehicle speed estimation error for increasing high-frequency GPS noise.
+    \caption{Vehicle speed estimation error for increasing high-frequency GPS noise.
     For higher GPS noise, \watchfone\ relies more and more on the accelerometer component 
     of the complementary filter. }
     \label{watchfone rebuttal gps in paper}
@@ -128,7 +127,7 @@ analysis results. $\alpha$ refers to the trade-off between
 GPS-speed and accelerometer-speed, used in the complementary 
 filter in \watchfone. To extend this work, we can use the GPS
 confidence returned by GPS chips to conditionally turn
-on or off \watchfone's estimation capabilities.}
+on or off \watchfone's estimation capabilities.
 
 
 \subsubsection{Additional Redundancy from Passengers' Phones}
@@ -174,7 +173,7 @@ this is more sensitive to the phone orientation.
 
 The second factor doesn't affect steering wheel estimations as badly because 
 the phone only needs to the re-oriented to the world-plane to get the angular 
-movement. {\color{highlightColor}We simply do this using the gravity vector.} In contrast,
+movement. We simply do this using the gravity vector. In contrast,
 the speed estimation requires that we get the oriented acceleration along the
 axis of the car's movement, which is a more constrained estimation of the 
 phone's orientation.
@@ -187,7 +186,7 @@ driver's smartwatch.
 \pagebreak
 
 \subsubsection{Key Findings}
-Our key findings in estimating 6 vehicular sensors using 3 phone sensors can be summarized as follows. {\color{highlightColor}The first three key findings reflect and corroborate similar findings in related work. The fourth key finding is an extension based on our experiments with passenger phones}.
+Our key findings in estimating 6 vehicular sensors using 3 phone sensors can be summarized as follows. The first three key findings reflect and corroborate similar findings in related work. The fourth key finding is an extension based on our experiments with passenger phones.
 \begin{itemize}
     \item The phone can be used to accurately estimate the speed, steering wheel, gear position, consumed fuel level, and change in odometer.
     
