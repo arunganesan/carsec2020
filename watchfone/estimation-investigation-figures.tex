@@ -1,44 +1,49 @@
 % !TeX root = ./main.tex
 
-\begin{figure}[h]
+
+
+
+
+\begin{figure}
     \centering
-    \begin{tabular}[c]{ccc}
-        \multirow{2}{*}[14pt]{
-            \begin{subfigure}{0.3\textwidth}
-                \vspace{-0.75in}
-                \includegraphics[width=\linewidth]{watchfone/figures/06-a-gear_nn-T21192-pilot.pdf}
-                \caption{Local road gear error}
-                \label{fig:local gear error}
-            \end{subfigure}
-        } & \multirow{2}{*}[14pt]{
-            \begin{subfigure}{0.3\textwidth}
-                \vspace{-0.75in}
-                \includegraphics[width=\linewidth]{watchfone/figures/06-b-gear_nn-T21050-pilot.pdf}
-                \caption{Highway road gear error}
-                \label{fig:highway gear error}
-            \end{subfigure}
-        } & \begin{subfigure}[c]{0.3\textwidth}
-                \includegraphics[width=\linewidth]{watchfone/figures/04-all-good-gps/ideal_rpm-workspace-cdf.pdf}
-                \caption{Engine RPM estimation error using the ground truth 
-                vehicle speed and gear position.}
-                \label{fig:ideal-rpm-error}
-            \end{subfigure} \\ 
-        & & \begin{subfigure}[c]{0.3\textwidth}
-                \includegraphics[width=\linewidth]{watchfone/figures/18-tire-slip.pdf}
-                \caption{Distribution of RPM errors. Figure best seen in color.}
-                \label{fig:tire-slip-pdfs}
-            \end{subfigure} \\
-        \multicolumn{3}{c}{
-            \begin{subfigure}{\linewidth}
-                \centering
-                \vspace{0.4in}
-                \includegraphics[width=0.65\linewidth]{watchfone/figures/05-fuel-T48.pdf}
-                \caption{Example comparison of estimated fuel level with the ground truth.}
-                \label{fig:fuel-error}
-            \end{subfigure} 
-        }
-    \end{tabular}    
-    \caption{\ref{fig:local gear error} and \ref{fig:highway gear error} show the gear estimation error on the highway compared to local roads. The pie chart shows the distribution of the trip on the highway and local roads. The middle line graph depicts the fluctuation of the gear position during the trip. The bottom line graph is the estimation error. \watchfone's estimation error is due to the highly fluctuating and complex behavior of the transmission control unit on the local roads.}
-    \label{fig:ceo}
-  \end{figure}
+    \begin{subfigure}[c]{0.3\textwidth}
+        \includegraphics[width=\linewidth]{watchfone/figures/06-a-gear_nn-T21192-pilot.pdf}
+        \caption{Local road gear error}
+        \label{fig:local gear error}
+    \end{subfigure} 
+    \begin{subfigure}[c]{0.3\textwidth}
+        \includegraphics[width=\linewidth]{watchfone/figures/06-b-gear_nn-T21050-pilot.pdf}
+        \caption{Highway gear error}
+        \label{fig:highway gear error}
+    \end{subfigure}
+    \caption{Engine RPM and tire slip investigation}
+    \label{investigation1}
+\end{figure}
+
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[c]{0.4\textwidth}
+        \includegraphics[width=\linewidth]{watchfone/figures/04-all-good-gps/ideal_rpm-workspace-cdf.pdf}
+        \caption{Engine RPM estimation error using the ground truth 
+        vehicle speed and gear position.}
+        \label{fig:ideal-rpm-error}
+    \end{subfigure} 
+    \begin{subfigure}[c]{0.4\textwidth}
+        \includegraphics[width=\linewidth]{watchfone/figures/18-tire-slip.pdf}
+        \caption{Distribution of RPM errors. Figure best seen in color.}
+        \label{fig:tire-slip-pdfs}
+    \end{subfigure}
+    \caption{Engine RPM and tire slip investigation}
+    \label{investigation2}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{watchfone/figures/05-fuel-T48.pdf}
+    \caption{Fuel estimation error drift}
+    \label{fig:fuel-error}
+\end{figure}
 
