@@ -1,0 +1,52 @@
+{\LARGE \textbf{Figure Clarifications}}
+
+{\large \textbf{Asked by}}
+\begin{itemize}
+    \item Reviewer 2: {\it ... some of the figures became really hard to read. For example, Fig 7, it's hard to distinguish between TPR and FPR, especially in (a) and (c).}
+    
+    \item Reviewer 3: {\it ...The explanation and readability should be significantly improved of Figure 6. The authors never addressed this... Even though the authors added one sentence to explain Figure 7, it is still hard to understand the meaning of different markers. For example, there are no circle markers in Figure 7c. Are the three subfigures share the same legend?}
+    
+    \item Reviewer 4:  {\it The authors do not address Reviewer 3's reviews satisfactorily. The explanation for the results, especially for Figure 6 and 7, shall be improved. These revisions are necessary to make this paper good for publication.}
+\end{itemize}
+
+{\large \textbf{How we addressed}} 
+\begin{itemize}
+    \item \changes{Split up Figure 6 into multiple figures. The shared caption was confusing the reviewers.}
+    \item \changes{Added helpful annotation to the actual figures in Figure 6.}
+    \item \changes{Changed the legend for Figure 7. Created a separate standalone shared legend.}
+\end{itemize}
+
+\vspace{0.7in}
+\noindent {\LARGE \textbf{Lack of Novelty}}
+
+{\large \textbf{Asked by}}
+\begin{itemize}
+    \item Reviewer 3: {\it For the four insights obtained in this paper, the authors claim the first three are similar to existing findings, but they do not cite the related works. In addition, since these findings are already uncovered by existing work, it seems not necessary to show all these findings. Even though verifying existing findings is ok, the IMWUT community cares more about novel ideas and new findings. Hence, lacking new findings is one key drawback of this paper.}
+    
+    \item Reviewer 4:  {\it ...The lack of novelty makes this paper less attractive to the IMWUT community. ... If the authors consider a resubmission, it would be interesting to see new approaches for sensing data processing, a comprehensive design and evaluation of the car’s sensor cross-validation system, and insights about the involving smartphones into car security system.}
+\end{itemize}
+
+{\large \textbf{How we addressed}} 
+\begin{itemize}
+    \item \changes{The novelty of our system is primarily \underline{using smartphone sensing for falsification detection}}
+    \item \changes{We also created a new gear-estimation algorithm using neural networks and did a root cause analysis into where sensing algorithms fail such as steering wheel during low-speed scenarios and engine RPM during high tire-slip scenarios.} 
+    \item \changes{All this is now clarified in the introduction and in the key findings.}
+    \item \changes{Cited the prior work on vehicle estimation algorithms. Our results corroborate these results. Also updated the key findings to only mention the {\it new} findings we discovered in our study.}
+\end{itemize}
+
+
+
+
+
+\vspace{0.7in}
+\noindent {\LARGE \textbf{Other Comments}}
+\raggedbottom
+
+\begin{itemize}
+    \item Reviewer 2: {\it ... It lacks a connection to IMWUT, a reflection on how CarSec contributions can enable ubiquitous computing} $\rightarrow$ \changes{Clarified the connection to Ubicomp in the discussion}
+    \item Reviewer 4: {\it ...text on Page 19: “connectplug” should be “plug”.} $\rightarrow$ \changes{Fixed}
+    
+    \item Reviewer 3: {\it ... For example, given a specific injection (e.g., 4kmph), the evaluation errors should be investigated under different driving speeds...} $\rightarrow$ \changes{The evaluation shown in Fig 11 already shows evaluation errors under different speeds, and other sensor values. This is now clarified in the figure.}
+    
+    \item Reviewer 4:  {\it ...when the user switches to a new phone, does CarSec require the user to send both the car and the phone to the factory for calibration} $\rightarrow$ \changes{No calibration needed per-phone. Clarified in text.}
+\end{itemize}

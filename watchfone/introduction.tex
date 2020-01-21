@@ -37,7 +37,7 @@ making their integration with existing vehicles prohibitively expensive \cite{ar
 \end{figure}
 
 % How you fill the need: Carsec - Phone as a Car Security Assistant
-\textbf{Proposed Solution.} We propose a new security assistant called \watchfone{} to fill this need. 
+\textbf{Proposed Solution.} We propose a new security assistant called \watchfone\ to fill this need. 
 The first step of many of the vehicular attacks reported in literature involves injecting \textit{falsified sensor data} 
 into the CAN bus. \watchfone{} independently acquires these sensor values using 
 the \textit{smartphone's sensors} and cross-validates them with what is seen in 
@@ -77,19 +77,6 @@ expensive integration with the vehicle.
 sensor-falsification attacks, we have to estimate vehicular values and compare them 
 with the sensor values on the CAN bus.
 
-\paragraph{Challenges in Estimating Vehicular Sensor Values} \watchfone{} uses the
-smartphone's multifaceted sensors to cross-validate vehicular sensors reported on the
-CAN bus. Specifically, it uses 3 widely-found smartphone sensors (Inertial Measurement
-Unit (IMU), magnetometer, and GPS) to estimate 6 vehicular sensors (gear, engine RPM,
-speed, steering wheel angle, odometer, and consumed fuel).
-
-This is a challenging task due to the lack of a direct mapping between smartphone and 
-vehicular sensor values. For example, the steering wheel angle has some relation to the 
-angular motion of the vehicle, but this is not directly observable by the smartphone. 
-To address this, we used vehicle's physical dynamics models (e.g., Ackerman model 
-\cite{liu_bigroad:_2017}), publicly available vehicle specs from the OEMs (e.g., gear 
-ratios), and sensor fusion techniques (e.g., complementary filter) to 
-translate the smartphone's measurements to the vehicle sensors.
 
 \paragraph{Challenges in Evaluating Falsification Attacks} There exists a dearth of 
 evaluation metrics for CAN-bus injection or falsification attacks, even though injection 
@@ -98,6 +85,17 @@ lack of benchmarks, we survey existing literature on vehicular cyber-attacks and
 some of the more common sensor-falsification attacks. We categorize this into different 
 types of falsification attacks, and evaluate \watchfone{} against these attacks to demonstrate
 its effectiveness in a realistic scenario.
+
+\paragraph{Challenges in Estimating Vehicular Sensor Values} 
+\changes{Estimating the readings of vehicle sensors using smartphone sensors requires a robust method which is resilient to common phone usage. Prior work on vehicle sensor estimation requires data from installed sensors and has not addressed the difficulties associated with common phone-based movements \cite{liu_bigroad:_2017, skog_indirect_2014}. 
+In contrast, using the vehicle's physical dynamics models (e.g., Ackerman model 
+\cite{liu_bigroad:_2017}), publicly available vehicle specifications from 
+the OEMs (e.g., gear ratios), and sensor fusion techniques (e.g., complementary 
+filter, neural network), we have built a system that is robust to common phone usage/movements. We demonstrate this through extensive experiments.}
+
+\changes{Furthermore, to overcome the lack of a well-defined vehicle model for estimating the current gear position, we have developed a neural network to predict the gear position given the change in recent speed.}
+
+
 
 % Key results:
 \textbf{Key Findings.} 
@@ -123,7 +121,7 @@ This paper makes the following main contributions:
 \item {\em Extensive evaluation of vehicle sensor estimation algorithms under diverse realistic situations}. We show the robustness of vehicle sensor estimation algorithms on 6 different vehicles, 912 miles of driving, and under 4 different common uses of the phone by 7 different passengers. 
 
 
-\item \changes{{\em Expansion of vehicle estimation research}. We extend prior work on vehicle estimation algorithms by (a) a novel neural-network based gear-estimation algorithm and (b) an investigation into the failure modes of engine RPM estimation using prior methods}
+\item \changes{{\em Expansion of vehicle estimation research}. We extend prior work on vehicle estimation by (a) developing a novel neural-network based gear-estimation algorithm and (b) investigating the failure modes of engine RPM estimation using prior methods.}
 
 \item {\em Development and evaluation of \watchfone\, a novel system to detect CAN-bus injection attacks}. We use phone-based vehicle sensor estimation to detect CAN-bus injection attacks. To the best of our knowledge, this is the first to apply phone-based vehicle estimation algorithms for the detection of CAN-bus sensor falsification attacks. We also demonstrate its computational feasibility with an efficient Android implementation and provide source code facilitating future follow-up research in this area. 
 \end{itemize}

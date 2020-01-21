@@ -1,5 +1,5 @@
 We evaluated \watchfone's estimation accuracy in the absence of attacks. We compare the estimated and the ground truth values for all \numtrips{} trips. 
-Fig.~\ref{fig:estimation-accuracy} plots the CDF of the errors.
+Fig.~\ref{fig:estimation-accuracy} plots the CDF of the errors. \changes{The results presented in this section corroborate the estimation accuracy reported by prior work \cite{skog_indirect_2014, liu_bigroad:_2017}. We go beyond prior work in our gear estimation evaluation and dig deeper into the common cause of estimation failure for many sensors. Moreover we evaluate the estimation algorithms under normal phone usage scenarios.}
 
 \subsubsection{Speed} 
 \watchfone{} can very accurately estimate the speed using GPS sensors 
@@ -11,7 +11,7 @@ the aligned accelerometer readings.
 \subsubsection{Gear}
 \watchfone{} also accurately estimates the gear position. Over $\approx$80\% of the time, it can exactly estimate the current gear position, and at 95\% percentile, it is wrong by 
 1 gear position. 
-We noticed that the errors are related to where the 
+We observed that the errors are related to where the 
 driver travels. \watchfone{} can more accurately estimate the gear 
 position when the trip is predominantly in the highway versus 
 surface local roads (see Figs.~\ref{fig:local gear error}~and~\ref{fig:highway gear error}). 
@@ -184,10 +184,11 @@ driver's smartwatch.
 \input{watchfone/estimation-investigation-figures}
 
 \subsubsection{Key Findings}
-\changes{We corroborated the error values reported in prior literature in estimating vehicle sensors \cite{liu_bigroad:_2017, cho_cps_2015}. In addition to this, we discovered three key findings from our work, summarized below.}
+\changes{We corroborated the errors reported in prior work in estimating vehicle sensors \cite{liu_bigroad:_2017, cho_cps_2015}. We also made three key 
+findings, summarized below.}
 
 \begin{itemize}
-    \item \changes{Phone estimation algorithms work reliably even while the phone is being used for common activities such as texting or making a phone call.}
+    \item \changes{Phone-based estimation algorithms work reliably even while the phone is being used for common activities such as texting or making a phone call.}
     
     \item \changes{Gear position can be accurately estimated using a neural network that accepts the recent change in vehicle speed.} 
     
